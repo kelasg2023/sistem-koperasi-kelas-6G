@@ -130,11 +130,11 @@ GET  /api/v1/fraud/log?status=SUSPICIOUS
 
 ## 📌 Pembagian Tugas Tim
 
-| Fitur | Penanggung Jawab | Deadline |
-|-------|-----------------|----------|
-| Rekomendasi Produk Laris | _(isi nama)_ | _(isi tanggal)_ |
-| Prediksi Stok Aman | _(isi nama)_ | _(isi tanggal)_ |
-| Deteksi Fraud Transaksi | _(isi nama)_ | _(isi tanggal)_ |
+| Fitur | Penanggung Jawab |
+|-------|-----------------|
+| Rekomendasi Produk Laris | _(isi nama)_ |
+| Prediksi Stok Aman | _(isi nama)_ |
+| Deteksi Fraud Transaksi | _(isi nama)_ |
 
 ---
 
