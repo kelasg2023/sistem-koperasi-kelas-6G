@@ -1,0 +1,54 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Virtual Environment ────────────────────────────────────────────────────────
+venv/
+.venv/
+env/
+ENV/
+
+# ── Environment Variables ──────────────────────────────────────────────────────
+.env
+*.env.local
+
+# ── Jupyter Notebooks ─────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ── ML Artifacts ──────────────────────────────────────────────────────────────
+models/saved/*.pkl
+models/saved/*.joblib
+models/saved/*.h5
+models/saved/*.pt
+mlruns/
+
+# ── Data ──────────────────────────────────────────────────────────────────────
+data/raw/*
+data/processed/*
+data/db/*.db
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/db/.gitkeep
+
+# ── IDE / OS ──────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── Test ──────────────────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
