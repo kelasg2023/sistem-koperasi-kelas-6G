@@ -26,3 +26,20 @@ def test_predict():
     data = response.json()
     assert "prediction" in data
     assert data["status"] == "success"
+
+
+def test_fraud_check():
+    # Test normal transaction
+    payload_normal = {
+        "transaction_id": 1,
+        "user_id": 10,
+        "total_harga": 50000.0,
+        "payment_method": "qris",
+        "created_at": "2026-06-27 12:00:00"
+    }
+    response = client.post("/api/v1/fraud/check", json=payload_normal)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] in ["normal", "suspicious"]
+    assert "fraud_score" in data
+
