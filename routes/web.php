@@ -4,28 +4,31 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Halaman Utama (dengan navbar + sidebar)
+| Halaman Onboarding (Ini akan tampil di http://127.0.0.1:8000/)
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
+    return view('welcome');
+})->name('welcome');
+
+/*
+|--------------------------------------------------------------------------
+| Halaman Utama (Ini akan tampil di http://127.0.0.1:8000/beranda)
+|--------------------------------------------------------------------------
+*/
+Route::get('/beranda', function () {
     return view('beranda');
 })->name('beranda');
 
 /*
 |--------------------------------------------------------------------------
-| Auth — no-chrome (login, register, dll.)
+| Auth
 |--------------------------------------------------------------------------
 */
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-Route::get('/register', function () {
-    // return view('auth.register'); // buat nanti
-    return redirect()->route('login');
-})->name('register');
-
-// Stub logout — ganti dengan controller Auth saat sudah siap
 Route::post('/logout', function () {
     return redirect('/');
 })->name('logout');
