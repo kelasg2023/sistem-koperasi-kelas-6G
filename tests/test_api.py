@@ -43,3 +43,25 @@ def test_fraud_check():
     assert data["status"] in ["normal", "suspicious"]
     assert "fraud_score" in data
 
+
+def test_produk_laris():
+    response = client.get("/api/v1/produk/laris?periode=30d&limit=3")
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+    if len(data) > 0:
+        assert "barang_id" in data[0]
+        assert "nama" in data[0]
+        assert "skor_popularitas" in data[0]
+
+
+def test_rekomendasi_anggota():
+    response = client.post("/api/v1/rekomendasi/anggota/5?num_recommendations=3")
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+    if len(data) > 0:
+        assert "barang_id" in data[0]
+        assert "nama" in data[0]
+
+
