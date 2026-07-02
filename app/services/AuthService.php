@@ -1,6 +1,6 @@
 <?php
 
-namespace Auth\Src;
+namespace App\Services;
 
 use PDO;
 use PDOException;

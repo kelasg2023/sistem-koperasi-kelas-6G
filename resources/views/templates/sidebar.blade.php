@@ -1,8 +1,15 @@
 <aside id="sidebar" class="w-[220px] bg-white flex flex-col py-6 px-4 fixed inset-y-0 left-0 border-r border-gray-200 z-[100] transition-transform duration-300 transform -translate-x-full lg:translate-x-0">
     
-    <div class="flex items-center gap-2.5 text-lg font-extrabold text-[#2D7A42] mb-8 pl-1">
-        <i class="fa-solid fa-seedling text-[22px]"></i>
-        Koperasi 6G
+    <div class="flex items-center justify-between mb-8 pl-1">
+        <div class="flex items-center gap-2.5 text-lg font-extrabold text-[#2D7A42]">
+            <i class="fa-solid fa-seedling text-[22px]"></i>
+            Koperasi 6G
+        </div>
+
+        {{-- Tombol Close, hanya tampil di mobile --}}
+        <button onclick="toggleSidebar(false)" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
+            <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
     </div>
 
     <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-2 mb-2">Menu</div>
