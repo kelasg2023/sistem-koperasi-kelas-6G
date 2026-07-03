@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id('transaction_id');
+            $table->foreignId('user_id')->constrained('users', 'id_users')->onDelete('restrict');
+            $table->decimal('total_harga', 15, 2)->default(0.00);
+            $table->enum('status', ['berhasil', 'proses', 'gagal', 'refund'])->default('proses');
+            $table->enum('payment_method', ['cash', 'qris', 'transfer', 'wallet'])->default('cash');
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

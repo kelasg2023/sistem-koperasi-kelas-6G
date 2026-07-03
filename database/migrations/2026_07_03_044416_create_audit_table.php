@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('audit', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id('audit_id');
+            $table->foreignId('transaction_id')->constrained('transactions', 'transaction_id')->onDelete('cascade');
+            $table->string('status_audit', 50);
+            $table->datetime('tanggal_audit')->useCurrent();
+            $table->string('info_audit_lama')->nullable();
+            $table->string('info_audit_baru')->nullable();
         });
     }
 
