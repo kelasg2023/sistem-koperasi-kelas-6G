@@ -65,3 +65,44 @@ def test_rekomendasi_anggota():
         assert "nama" in data[0]
 
 
+def test_stok_prediksi():
+    response = client.get("/api/v1/stok/prediksi?lead_time=3&service_level=0.95")
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+    if len(data) > 0:
+        assert "barang_id" in data[0]
+        assert "nama" in data[0]
+        assert "stok_sekarang" in data[0]
+        assert "prediksi_permintaan_harian" in data[0]
+        assert "safety_stock" in data[0]
+        assert "reorder_point" in data[0]
+
+
+def test_stok_alert():
+    response = client.get("/api/v1/stok/alert?lead_time=3&service_level=0.95")
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+    if len(data) > 0:
+        assert "barang_id" in data[0]
+        assert "nama" in data[0]
+        assert "stok_sekarang" in data[0]
+        assert "reorder_point" in data[0]
+        assert "status" in data[0]
+
+
+def test_stok_safety():
+    # Test dengan barang ID 1
+    response = client.post("/api/v1/stok/safety/1?lead_time=4&service_level=0.99")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["barang_id"] == 1
+    assert "nama" in data
+    assert data["lead_time"] == 4
+    assert data["service_level"] == 0.99
+    assert "safety_stock" in data
+    assert "reorder_point" in data
+
+
+
