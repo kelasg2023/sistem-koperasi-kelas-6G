@@ -39,6 +39,7 @@ class UpdateVoucherRequest extends FormRequest
             'potongan_persen' => 'sometimes|numeric|min:0|max:100',
             'kuota'           => 'sometimes|integer|min:0',
             'barang_id'       => 'sometimes|integer|exists:barang,barang_id',
+            'tipe_voucher'    => 'sometimes|in:langsung,claim',
             'expired_at'      => 'sometimes|date|after:now',
         ];
     }
@@ -55,6 +56,7 @@ class UpdateVoucherRequest extends FormRequest
             'potongan_persen.max'      => 'Potongan persen tidak boleh melebihi 100%.',
             'kuota.min'                => 'Kuota tidak boleh negatif.',
             'barang_id.exists'         => 'Barang tidak ditemukan.',
+            'tipe_voucher.in'          => 'Tipe voucher harus langsung atau claim.',
             'expired_at.after'         => 'Tanggal kadaluarsa harus di masa depan.',
         ];
     }

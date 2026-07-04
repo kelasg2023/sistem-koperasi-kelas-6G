@@ -28,6 +28,7 @@ class StoreVoucherRequest extends FormRequest
             'potongan_persen' => 'required|numeric|min:0|max:100',
             'kuota'           => 'required|integer|min:0',
             'barang_id'       => 'required|integer|exists:barang,barang_id',
+            'tipe_voucher'    => 'required|in:langsung,claim',
             'expired_at'      => 'required|date|after:now',
         ];
     }

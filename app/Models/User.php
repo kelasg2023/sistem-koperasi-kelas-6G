@@ -31,5 +31,6 @@ class User extends Authenticatable
     public function customer() { return $this->hasOne(Customer::class, 'user_id', 'id_users'); }
     public function transactions() { return $this->hasMany(Transaction::class, 'user_id', 'id_users'); }
     public function wallet() { return $this->hasOne(Wallet::class, 'user_id', 'id_users'); }
+    public function voucherClaims() { return $this->hasMany(VoucherClaim::class, 'user_id', 'id_users'); }
 
 }

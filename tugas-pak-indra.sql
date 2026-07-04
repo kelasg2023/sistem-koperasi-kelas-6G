@@ -100,8 +100,18 @@ CREATE TABLE `vouchers` (
   `potongan_persen` decimal(5,2) DEFAULT '0.00',
   `kuota` int DEFAULT '0',
   `barang_id` int NOT NULL,
+  `tipe_voucher` ENUM ('langsung', 'claim') DEFAULT 'langsung',
   `expired_at` datetime NOT NULL,
   `created_at` timestamp DEFAULT (CURRENT_TIMESTAMP)
+);
+
+CREATE TABLE `voucher_claims` (
+  `claim_id` int PRIMARY KEY NOT NULL,
+  `user_id` int NOT NULL,
+  `id_voucher` int NOT NULL,
+  `status` ENUM ('claimed', 'used', 'expired') DEFAULT 'claimed',
+  `claimed_at` timestamp DEFAULT (CURRENT_TIMESTAMP),
+  `used_at` timestamp DEFAULT NULL
 );
 
 CREATE TABLE `wallet` (
@@ -119,33 +129,21 @@ CREATE TABLE `wallet_history` (
 );
 
 ALTER TABLE `audit` ADD CONSTRAINT `audit_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`transaction_id`) ON DELETE CASCADE;
-
 ALTER TABLE `barang` ADD CONSTRAINT `barang_ibfk_1` FOREIGN KEY (`id_kategori`) REFERENCES `kategori` (`id_kategori`) ON DELETE RESTRICT;
-
 ALTER TABLE `customers` ADD CONSTRAINT `customers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id_users`) ON DELETE CASCADE;
-
 ALTER TABLE `merk` ADD CONSTRAINT `merk_ibfk_1` FOREIGN KEY (`barang_id`) REFERENCES `barang` (`barang_id`) ON DELETE CASCADE;
-
 ALTER TABLE `stok_history` ADD CONSTRAINT `stok_history_ibfk_1` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`supplier_id`) ON DELETE SET NULL;
-
 ALTER TABLE `stok_history` ADD CONSTRAINT `stok_history_ibfk_2` FOREIGN KEY (`barang_id`) REFERENCES `barang` (`barang_id`) ON DELETE CASCADE;
-
 ALTER TABLE `supplier` ADD CONSTRAINT `supplier_ibfk_1` FOREIGN KEY (`merk_id`) REFERENCES `merk` (`merk_id`) ON DELETE RESTRICT;
-
 ALTER TABLE `supplier` ADD CONSTRAINT `supplier_ibfk_2` FOREIGN KEY (`barang_id`) REFERENCES `barang` (`barang_id`) ON DELETE RESTRICT;
-
 ALTER TABLE `transactions` ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id_users`) ON DELETE RESTRICT;
-
 ALTER TABLE `transaction_details` ADD CONSTRAINT `transaction_details_ibfk_1` FOREIGN KEY (`transaction_id`) REFERENCES `transactions` (`transaction_id`) ON DELETE CASCADE;
-
 ALTER TABLE `transaction_details` ADD CONSTRAINT `transaction_details_ibfk_2` FOREIGN KEY (`barang_id`) REFERENCES `barang` (`barang_id`) ON DELETE RESTRICT;
-
 ALTER TABLE `transaction_details` ADD CONSTRAINT `transaction_details_ibfk_3` FOREIGN KEY (`id_voucher`) REFERENCES `vouchers` (`id_voucher`) ON DELETE RESTRICT;
-
 ALTER TABLE `users_profiles` ADD CONSTRAINT `users_profiles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id_users`) ON DELETE CASCADE;
-
 ALTER TABLE `vouchers` ADD CONSTRAINT `vouchers_ibfk_1` FOREIGN KEY (`barang_id`) REFERENCES `barang` (`barang_id`) ON DELETE CASCADE;
-
+ALTER TABLE `voucher_claims` ADD CONSTRAINT `voucher_claims_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id_users`) ON DELETE CASCADE;
+ALTER TABLE `voucher_claims` ADD CONSTRAINT `voucher_claims_ibfk_2` FOREIGN KEY (`id_voucher`) REFERENCES `vouchers` (`id_voucher`) ON DELETE CASCADE;
+ALTER TABLE `voucher_claims` ADD CONSTRAINT `voucher_claims_unique` UNIQUE (`user_id`, `id_voucher`);
 ALTER TABLE `wallet` ADD CONSTRAINT `wallet_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id_users`) ON DELETE CASCADE;
-
 ALTER TABLE `wallet_history` ADD CONSTRAINT `wallet_history_ibfk_1` FOREIGN KEY (`id_wallet`) REFERENCES `wallet` (`id_wallet`) ON DELETE CASCADE;
