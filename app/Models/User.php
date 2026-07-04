@@ -7,17 +7,18 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['username', 'password', 'role'])]
+#[Fillable(['username', 'email', 'password'])]
 #[Hidden(['password'])]
 class User extends Authenticatable
 {
     protected $table = 'users';
     protected $primaryKey = 'id_users';
 
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     protected function casts(): array
     {
@@ -27,7 +28,7 @@ class User extends Authenticatable
     }
 
 
-    public function profile() { return $this->hasOne(UserProfile::class, 'user_id', 'id_users'); }
+    public function profile() { return $this->hasOne(UserProfile::class, 'user_id', 'id_users')->withDefault(); }
     public function customer() { return $this->hasOne(Customer::class, 'user_id', 'id_users'); }
     public function transactions() { return $this->hasMany(Transaction::class, 'user_id', 'id_users'); }
     public function wallet() { return $this->hasOne(Wallet::class, 'user_id', 'id_users'); }

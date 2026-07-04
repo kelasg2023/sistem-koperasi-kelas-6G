@@ -16,13 +16,17 @@ class CheckRole
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
         if (!auth()->check()) {
-            return redirect('/login');
+            return $request->expectsJson() || $request->is('api/*')
+                ? response()->json(['success' => false, 'message' => 'Unauthenticated.'], 401)
+                : redirect('/login');
         }
 
         if (in_array(auth()->user()->role, $roles)) {
             return $next($request);
         }
 
-        abort(403, 'Unauthorized action.');
+        return $request->expectsJson() || $request->is('api/*')
+            ? response()->json(['success' => false, 'message' => 'Unauthorized action.'], 403)
+            : abort(403, 'Unauthorized action.');
     }
 }
