@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('wallet_history', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id('id_wt_history');
+            $table->foreignId('id_wallet')->constrained('wallet', 'id_wallet')->onDelete('cascade');
+            $table->decimal('balance_transaction', 15, 2);
+            $table->enum('wt_status_history', ['penambahan', 'pengembalian', 'terpakai']);
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

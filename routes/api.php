@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\VoucherController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -79,7 +80,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Endpoint dinamis untuk dashboard (berdasarkan role user saat ini)
-    // Frontend bisa menggunakan ini untuk mengecek role dan merender UI yang sesuai
     Route::get('/dashboard', function (Request $request) {
         $user = $request->user();
         
@@ -101,4 +101,16 @@ Route::middleware('auth:sanctum')->group(function () {
             ]
         ]);
     });
+});
+
+// Voucher Routes (masih tanpa sanctum middleware dari branch develop)
+Route::prefix('voucher')->group(function () {
+    Route::get('/',                    [VoucherController::class, 'index']);   // GET    /api/voucher
+    Route::post('/',                   [VoucherController::class, 'store']);   // POST   /api/voucher
+    Route::get('/check/{kode}',        [VoucherController::class, 'check']);   // GET    /api/voucher/check/{kode}
+    Route::post('/claim',              [VoucherController::class, 'claim']);   // POST   /api/voucher/claim
+    Route::post('/use',                [VoucherController::class, 'use']);     // POST   /api/voucher/use
+    Route::get('/{id}',                [VoucherController::class, 'show']);    // GET    /api/voucher/{id}
+    Route::put('/{id}',                [VoucherController::class, 'update']);  // PUT    /api/voucher/{id}
+    Route::delete('/{id}',             [VoucherController::class, 'destroy']); // DELETE /api/voucher/{id}
 });

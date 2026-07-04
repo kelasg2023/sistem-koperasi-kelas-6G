@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('supplier', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id('supplier_id');
+            $table->foreignId('merk_id')->constrained('merk', 'merk_id')->onDelete('restrict');
+            $table->foreignId('barang_id')->constrained('barang', 'barang_id')->onDelete('restrict');
+            $table->decimal('harga_beli', 15, 2);
+            $table->integer('jumlah');
+            $table->boolean('status')->default(1);
         });
     }
 

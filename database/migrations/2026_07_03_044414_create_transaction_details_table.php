@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transaction_details', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id('detail_id');
+            $table->foreignId('transaction_id')->constrained('transactions', 'transaction_id')->onDelete('cascade');
+            $table->foreignId('barang_id')->constrained('barang', 'barang_id')->onDelete('restrict');
+            $table->integer('jumlah');
+            $table->decimal('harga_satuan', 15, 2);
+            $table->foreignId('id_voucher')->nullable()->constrained('vouchers', 'id_voucher')->onDelete('restrict');
         });
     }
 

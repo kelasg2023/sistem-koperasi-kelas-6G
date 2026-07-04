@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('barang', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id('barang_id');
+            $table->string('nama');
+            $table->integer('stok')->default(0);
+            $table->decimal('harga', 15, 2);
+            $table->decimal('diskon_persen', 5, 2)->default(0.00);
+            $table->text('deskripsi')->nullable();
+            $table->foreignId('id_kategori')->constrained('kategori', 'id_kategori')->onDelete('restrict');
+            $table->softDeletes();
         });
     }
 
