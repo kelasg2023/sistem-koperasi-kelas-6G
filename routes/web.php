@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,3 +73,10 @@ Route::post('/logout', function () {
     session()->forget('user');
     return redirect('/');
 })->name('logout');
+
+
+Route::get('/produk', [ProductController::class,'index'])
+    ->name('produk.index');
+
+Route::get('/produk/{slug}', [ProductController::class,'show'])
+    ->name('produk.show');

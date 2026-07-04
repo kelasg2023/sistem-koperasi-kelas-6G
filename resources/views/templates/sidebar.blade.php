@@ -12,23 +12,47 @@
         </button>
     </div>
 
-    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-2 mb-2">Menu</div>
-    
-    <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white bg-[#2D7A42] font-semibold text-sm mb-0.5">
-        <i class="fa-solid fa-house w-[18px] text-center text-[15px]"></i> Beranda
-    </a>
-    <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 font-medium text-sm hover:bg-[#E8F5EC] hover:text-[#2D7A42] transition-colors mb-0.5">
-        <i class="fa-solid fa-grip w-[18px] text-center text-[15px]"></i> Kategori
-    </a>
-    <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 font-medium text-sm hover:bg-[#E8F5EC] hover:text-[#2D7A42] transition-colors mb-0.5">
-        <i class="fa-solid fa-receipt w-[18px] text-center text-[15px]"></i> Transaksi
-    </a>
-    <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 font-medium text-sm hover:bg-[#E8F5EC] hover:text-[#2D7A42] transition-colors mb-0.5">
-        <i class="fa-solid fa-handshake w-[18px] text-center text-[15px]"></i> Untung Bersama
-    </a>
-    <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 font-medium text-sm hover:bg-[#E8F5EC] hover:text-[#2D7A42] transition-colors mb-0.5">
-        <i class="fa-solid fa-gear w-[18px] text-center text-[15px]"></i> Pengaturan
-    </a>
+            <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-2 mb-2">
+            Menu
+        </div>
+
+        {{-- Beranda --}}
+        <a href="{{ route('dashboard') }}"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm mb-0.5
+        {{ request()->routeIs('dashboard')
+                ? 'bg-[#2D7A42] text-white font-semibold'
+                : 'text-gray-500 font-medium hover:bg-[#E8F5EC] hover:text-[#2D7A42]' }}">
+            <i class="fa-solid fa-house w-[18px] text-center text-[15px]"></i>
+            Beranda
+        </a>
+
+        {{-- Kategori --}}
+        <a href="{{ route('produk.index') }}"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm mb-0.5
+        {{ request()->routeIs('produk.index')
+                ? 'bg-[#2D7A42] text-white font-semibold'
+                : 'text-gray-500 font-medium hover:bg-[#E8F5EC] hover:text-[#2D7A42]' }}">
+            <i class="fa-solid fa-grip w-[18px] text-center text-[15px]"></i>
+            Kategori
+        </a>
+
+        {{-- Transaksi --}}
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 font-medium text-sm hover:bg-[#E8F5EC] hover:text-[#2D7A42] transition-colors mb-0.5">
+            <i class="fa-solid fa-receipt w-[18px] text-center text-[15px]"></i>
+            Transaksi
+        </a>
+
+        {{-- Untung Bersama --}}
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 font-medium text-sm hover:bg-[#E8F5EC] hover:text-[#2D7A42] transition-colors mb-0.5">
+            <i class="fa-solid fa-handshake w-[18px] text-center text-[15px]"></i>
+            Untung Bersama
+        </a>
+
+        {{-- Pengaturan --}}
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 font-medium text-sm hover:bg-[#E8F5EC] hover:text-[#2D7A42] transition-colors mb-0.5">
+            <i class="fa-solid fa-gear w-[18px] text-center text-[15px]"></i>
+            Pengaturan
+        </a>
 
     {{-- Sidebar spacer --}}
     <div class="flex-1"></div>

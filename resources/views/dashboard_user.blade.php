@@ -42,8 +42,9 @@
         {{-- KATEGORI --}}
         <div class="flex items-center justify-between mb-3 sm:mb-4">
             <h3 class="text-[15px] sm:text-[17px] font-extrabold text-gray-900">Kategori Pilihan</h3>
-            <a href="#" class="text-xs sm:text-[13px] font-semibold text-[#2D7A42] flex items-center gap-1 hover:underline shrink-0">
-                Lihat Semua <i class="fa-solid fa-arrow-right text-[11px]"></i>
+            <a href="{{ route('produk.index') }}" class="text-xs sm:text-[13px] font-semibold text-[#2D7A42] flex items-center gap-1 hover:underline shrink-0">
+            Lihat Semua
+            <i class="fa-solid fa-arrow-right text-[11px]"></i>
             </a>
         </div>
 
