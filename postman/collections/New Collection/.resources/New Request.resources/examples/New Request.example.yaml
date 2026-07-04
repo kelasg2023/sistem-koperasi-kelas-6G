@@ -1,0 +1,42 @@
+$kind: http-example
+request:
+  url: http://localhost:8000/api/voucher
+  method: POST
+  body:
+    type: json
+    content: "{\r
+
+      \    \"kode_voucher\": \"DISKON10\",\r
+
+      \    \"potongan_persen\": 10,\r
+
+      \    \"kuota\": 50,\r
+
+      \    \"barang_id\": 1,\r
+
+      \    \"expired_at\": \"2027-12-31 23:59:59\"\r
+
+      }"
+response:
+  statusCode: 422
+  statusText: Unprocessable Content
+  headers:
+    host: localhost:8000
+    connection: close
+    x-powered-by: PHP/8.4.13
+    cache-control: no-cache, private
+    date: Fri, 03 Jul 2026 23:32:07 GMT
+    content-type: application/json
+    access-control-allow-origin: "*"
+  body:
+    type: json
+    content: |-
+      {
+        "message": "Barang tidak ditemukan.",
+        "errors": {
+          "barang_id": [
+            "Barang tidak ditemukan."
+          ]
+        }
+      }
+order: 1783121562995

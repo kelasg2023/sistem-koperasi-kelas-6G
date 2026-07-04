@@ -21,9 +21,12 @@
 /storage/*.key
 /storage/pail
 /vendor
+<<<<<<< HEAD
 venv/
 __pycache__/
 app/__pycache__/
+=======
+>>>>>>> origin/develop/back-end
 _ide_helper.php
 Homestead.json
 Homestead.yaml

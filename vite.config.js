@@ -17,12 +17,19 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
+<<<<<<< HEAD
         host: '127.0.0.1',
         hmr: {
             host: '127.0.0.1',
         },
+=======
+>>>>>>> origin/develop/back-end
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
     },
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> origin/develop/back-end
