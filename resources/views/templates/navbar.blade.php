@@ -25,11 +25,100 @@
         <i class="fa-regular fa-circle-question"></i>
     </div>
     
-    {{-- User Pill --}}
-    <div class="flex items-center gap-2 py-1.5 pr-3 pl-1.5 border border-gray-200 rounded-full cursor-pointer hover:bg-gray-50 transition-colors shrink-0">
-        <div class="w-7 h-7 rounded-full bg-[#F5820A] text-white font-bold text-[13px] flex items-center justify-center shrink-0">S</div>
-        <span class="hidden sm:block font-semibold text-[13.5px] text-[#1A1A1A] whitespace-nowrap">Siti Aisha</span>
-        <i class="fa-solid fa-chevron-down text-[11px] text-gray-400 hidden sm:block shrink-0"></i>
+   {{-- Logika Session --}}
+@if(session()->has('user'))
+    @php
+        $userData = session('user');
+        $fullName = !empty($userData['profile']['name']) ? $userData['profile']['name'] : $userData['username'];
+        $initial = strtoupper(substr($fullName, 0, 1));
+    @endphp
+
+    <div class="relative shrink-0">
+        {{-- User Pill (Trigger) --}}
+        <div id="nav-user-menu-button" class="flex items-center gap-2 py-1.5 pr-3 pl-1.5 border border-gray-200 rounded-full cursor-pointer hover:bg-gray-50 transition-colors shrink-0 select-none">
+            <div class="w-7 h-7 rounded-full bg-[#F5820A] text-white font-bold text-[13px] flex items-center justify-center shrink-0">
+                {{ $initial }}
+            </div>
+            <span class="hidden sm:block font-semibold text-[13.5px] text-[#1A1A1A] whitespace-nowrap">
+                {{ $fullName }}
+            </span>
+            <i id="nav-user-menu-icon" class="fa-solid fa-chevron-down text-[11px] text-gray-400 hidden sm:block shrink-0 transition-transform duration-200"></i>
+        </div>
+
+        {{-- Dropdown Menu (Hidden secara default) --}}
+        <div id="nav-user-dropdown" class="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-lg z-50 hidden opacity-0 scale-95 origin-top-right transition-all duration-200">
+            <div class="py-1">
+                <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-[13.5px] text-[#1A1A1A] hover:bg-gray-50 transition-colors font-medium">
+                    Profile
+                </a>
+                <hr class="my-1 border-gray-100">
+                <form action="{{ route('logout') }}" method="POST" class="w-full">
+                    @csrf
+                    <button type="submit" class="w-full text-left px-4 py-2.5 text-[13.5px] text-red-600 hover:bg-red-50 font-medium transition-colors">
+                        Keluar
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
+@else
+    {{-- Tombol Masuk & Daftar (Jika Belum Login) --}}
+    <div class="flex items-center gap-2 shrink-0">
+        <a href="{{ route('login') }}" class="px-4 py-1.5 text-[13px] font-semibold text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-50 transition-colors">
+            Masuk
+        </a>
+        <a href="{{ route('register') }}" class="px-4 py-1.5 text-[13px] font-semibold text-white bg-[#2D7A42] rounded-full hover:bg-[#1f5c30] transition-colors shadow-sm">
+            Daftar
+        </a>
+    </div>
+@endif
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const navMenuBtn = document.getElementById('nav-user-menu-button');
+    const navDropdown = document.getElementById('nav-user-dropdown');
+    const navMenuIcon = document.getElementById('nav-user-menu-icon');
+
+    if (navMenuBtn && navDropdown) {
+        navMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isHidden = navDropdown.classList.contains('hidden');
+            
+            if (isHidden) {
+                // Munculkan menu
+                navDropdown.classList.remove('hidden');
+                setTimeout(() => {
+                    navDropdown.classList.remove('scale-95', 'opacity-0');
+                    navDropdown.classList.add('scale-100', 'opacity-100');
+                    // Putar ikon FontAwesome
+                    if(navMenuIcon) navMenuIcon.style.transform = 'rotate(180deg)';
+                }, 10);
+            } else {
+                // Sembunyikan menu
+                navDropdown.classList.remove('scale-100', 'opacity-100');
+                navDropdown.classList.add('scale-95', 'opacity-0');
+                if(navMenuIcon) navMenuIcon.style.transform = 'rotate(0deg)';
+                setTimeout(() => {
+                    navDropdown.classList.add('hidden');
+                }, 200); 
+            }
+        });
+
+        // Menutup dropdown jika user mengklik area lain
+        document.addEventListener('click', (e) => {
+            if (!navMenuBtn.contains(e.target) && !navDropdown.contains(e.target)) {
+                if (!navDropdown.classList.contains('hidden')) {
+                    navDropdown.classList.remove('scale-100', 'opacity-100');
+                    navDropdown.classList.add('scale-95', 'opacity-0');
+                    if(navMenuIcon) navMenuIcon.style.transform = 'rotate(0deg)';
+                    setTimeout(() => {
+                        navDropdown.classList.add('hidden');
+                    }, 200);
+                }
+            }
+        });
+    }
+});
+</script>
 
 </div>

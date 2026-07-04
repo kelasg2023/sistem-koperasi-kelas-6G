@@ -18,7 +18,7 @@
         <i class="fa-solid fa-house w-[18px] text-center text-[15px]"></i> Beranda
     </a>
     <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 font-medium text-sm hover:bg-[#E8F5EC] hover:text-[#2D7A42] transition-colors mb-0.5">
-        <i class="fa-solid fa-grip w-[18px] text-center text-[15px]"></i> Kategori
+        <i class="fa-solid fa-grip w-[18px] text-center text-[15px]"></i> Belanja HArian
     </a>
     <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-500 font-medium text-sm hover:bg-[#E8F5EC] hover:text-[#2D7A42] transition-colors mb-0.5">
         <i class="fa-solid fa-receipt w-[18px] text-center text-[15px]"></i> Transaksi

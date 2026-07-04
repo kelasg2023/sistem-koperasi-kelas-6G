@@ -37,14 +37,19 @@ class AuthService
             $stmt->execute([$username, $hashedPassword, $role]);
             $userId = (int) $this->pdo->lastInsertId();
 
-            $profileStmt = $this->pdo->prepare('INSERT INTO users_profiles (user_id, name, address, profile_picture, phone, member) VALUES (?, ?, ?, ?, ?, ?)');
+            // PERBAIKAN 1: Ubah nama kolom 'member' menjadi 'is_member'
+            $profileStmt = $this->pdo->prepare('INSERT INTO users_profiles (user_id, name, address, profile_picture, phone, is_member) VALUES (?, ?, ?, ?, ?, ?)');
+            
+            // PERBAIKAN 2: Tangkap data checkbox 'register_as_member' dari frontend (1 jika dicentang, 0 jika tidak)
+            $isMember = !empty($data['register_as_member']) ? 1 : 0;
+
             $profileStmt->execute([
                 $userId,
                 $data['name'] ?? '',
                 $data['address'] ?? '',
                 $data['profile_picture'] ?? '',
                 $data['phone'] ?? '',
-                $data['member'] ?? 'false',
+                $isMember, // Gunakan variabel $isMember yang sudah difilter
             ]);
 
             $this->pdo->commit();

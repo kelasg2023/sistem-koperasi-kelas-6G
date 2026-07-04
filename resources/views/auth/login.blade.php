@@ -83,10 +83,10 @@
                 <form method="POST" action="{{ route('login') }}" class="space-y-4">
                     @csrf
 
-                    <!-- Input Email/Nomor Anggota -->
+                    <!-- Input Username/Email -->
                     <div>
-                        <label for="email" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                            Email atau Nomor Anggota
+                        <label for="username" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                            Username atau Email
                         </label>
                         <div class="relative flex items-center">
                             <!-- Ikon User -->
@@ -95,12 +95,12 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>
                             </span>
-                            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
+                            <input id="username" type="text" name="username" value="{{ old('username') }}" required autofocus
                                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700
                                           bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400
                                           focus:ring-2 focus:ring-[#207a44]/20 focus:border-[#207a44] outline-none
                                           transition text-sm"
-                                   placeholder="Contoh: member123/email@koperasi.com">
+                                   placeholder="Contoh: member123 atau email@koperasi.com">
                         </div>
                     </div>
 

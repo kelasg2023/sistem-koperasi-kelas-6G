@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\ProductController;
 /*
 |--------------------------------------------------------------------------
 | Halaman Onboarding (Ini akan tampil di http://127.0.0.1:8000/)
@@ -18,12 +18,14 @@ Route::get('/', function () {
 |--------------------------------------------------------------------------
 */
 Route::get('/beranda', function () {
-    return view('beranda');
+    // PERBAIKAN: Ubah 'beranda' menjadi 'welcome'
+    return view('welcome');
 })->name('beranda');
 
 Route::get('/dashboard', function () {
     return view('dashboard_user');
 })->name('dashboard');
+
 /*
 |--------------------------------------------------------------------------
 | Auth
@@ -34,11 +36,12 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.store');
+
 Route::get('/lupa-password', function () {
     return view('auth.lupa_password');
 })->name('lupa-password');
 
-// TAMBAHKAN RUTE INI: Rute untuk memproses submit form email
+// Rute untuk memproses submit form email
 Route::post('/lupa-password/email', function (\Illuminate\Http\Request $request) {
     // Nanti logika untuk mengirim kode OTP atau integrasi ke AuthService diletakkan di sini
     
@@ -49,19 +52,22 @@ Route::post('/lupa-password/email', function (\Illuminate\Http\Request $request)
 // Rute sementara untuk melihat UI OTP
 Route::get('/preview-otp', function () {
     return view('auth.verifikasi_otp'); 
-})->name('preview-otp'); // <-- Tambahkan ini
-// Rute sementara untuk melihat UI Buat Sandi Baru (Ini yang sudah kamu buat)
+})->name('preview-otp');
+
+// Rute sementara untuk melihat UI Buat Sandi Baru
 Route::get('/preview-sandi-baru', function () {
     return view('auth.buat_sandi_baru'); 
 })->name('preview-sandi-baru');
 
-// TAMBAHKAN INI: Rute untuk menangani saat tombol 'Simpan' diklik
+// Rute untuk menangani saat tombol 'Simpan' diklik
 Route::post('/preview-sandi-baru', function () {
     // Di masa depan, ini adalah tempat kamu memanggil fungsi update password dari AuthService
     
     // Sementara, kita buat pura-pura berhasil dan kembali ke halaman depan/login
     return redirect('/')->with('status', 'Kata sandi berhasil diubah!');
 });
+
+Route::get('/produk/{kategori?}', [ProductController::class, 'index'])->name('produk.kategori');
 
 // Rute sementara untuk melihat UI Sandi Berhasil Diubah
 Route::get('/preview-sukses', function () {

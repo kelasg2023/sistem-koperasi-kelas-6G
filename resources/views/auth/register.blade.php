@@ -143,6 +143,14 @@
 
             <!-- Laravel Form -->
             <form action="{{ route('register.store') }}" method="POST" class="space-y-5 sm:space-y-6">
+                @error('register')
+    <div class="mb-4 p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
+        <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <p class="text-sm text-red-600 font-medium">{{ $message }}</p>
+    </div>
+@enderror
                 @csrf
 
                 <!-- Input Nama Lengkap -->
@@ -156,6 +164,18 @@
                         <p class="text-red-500 text-[11px] font-medium mt-1">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <!-- Input Username -->
+<div class="space-y-1.5 mt-4">
+    <label for="username" class="text-xs sm:text-sm font-semibold text-gray-600 block">
+        Username
+    </label>
+    <input type="text" id="username" name="username" value="{{ old('username') }}" placeholder="Contoh: ardian_putra" 
+           class="w-full px-4 py-3 border @error('username') border-red-500 @else border-gray-300 @enderror rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0D5C34]/20 focus:border-[#0D5C34] transition">
+    @error('username')
+        <p class="text-red-500 text-[11px] font-medium mt-1">{{ $message }}</p>
+    @enderror
+</div>
 
                 <!-- Input Row (Email & Nomor HP) -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

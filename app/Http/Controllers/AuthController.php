@@ -23,13 +23,18 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $result = $this->authService->login(
-            $request->input('username'),
-            $request->input('password')
-        );
+        // Perbaikan: Tangkap 'username' atau 'email', lalu paksa (cast) menjadi string
+        // Jika keduanya kosong, berikan string kosong ('') agar tidak terjadi error 'null given'
+        $loginIdentifier = (string) ($request->input('username') ?? $request->input('email') ?? '');
+        $password = (string) $request->input('password');
+
+        $result = $this->authService->login($loginIdentifier, $password);
 
         if (!$result['success']) {
-            return back()->withErrors(['login' => $result['message']]);
+            // Perbaikan: Tambahkan withInput agar inputan username/email tidak hilang saat gagal
+            return back()
+                ->withInput($request->except('password'))
+                ->withErrors(['login' => $result['message']]);
         }
 
         session(['user' => $result['user']]);
@@ -47,7 +52,11 @@ class AuthController extends Controller
         $result = $this->authService->register($request->all());
 
         if (!$result['success']) {
-            return back()->withErrors(['register' => $result['message']]);
+            // Perbaikan: Tambahkan withInput agar form (nama, email, no hp) tidak kosong lagi
+            // except digunakan agar password tidak ikut dikembalikan demi keamanan
+            return back()
+                ->withInput($request->except(['password', 'password_confirmation']))
+                ->withErrors(['register' => $result['message']]);
         }
 
         return redirect()->route('login')->with('success', 'Register berhasil, silakan login');

@@ -33,7 +33,7 @@
                    class="w-full bg-gray-100 dark:bg-gray-800 pl-10 pr-4 py-2 rounded-full text-xs font-medium outline-none focus:ring-1 focus:ring-[#1A622A] dark:text-white transition" />
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-4 relative">
             <button class="relative text-gray-700 dark:text-gray-300 hover:text-[#1A622A] focus:outline-none">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -50,25 +50,71 @@
                 </span>
             </button>
 
-            @if (Route::has('login'))
-                <a href="{{ route('login') }}" class="border border-gray-800 dark:border-gray-600 px-5 py-1.5 rounded-full text-xs font-semibold text-gray-900 dark:text-gray-300 hover:bg-gray-50 transition">
-                    Masuk
-                </a>
+            <!-- Logika Session Berada di Sini -->
+            @if(session()->has('user'))
+                @php
+                    $userData = session('user');
+                    $fullName = !empty($userData['profile']['name']) ? $userData['profile']['name'] : $userData['username'];
+                    $initial = strtoupper(substr($fullName, 0, 1));
+                @endphp
+
+                {{-- User Pill & Dropdown (Menggunakan Click, bukan Hover) --}}
+                <div class="relative ml-2">
+                    <!-- Tombol Pill (Trigger) -->
+                    <div id="user-menu-button" class="flex items-center gap-2 py-1.5 pr-3 pl-1.5 border border-gray-200 dark:border-gray-700 rounded-full cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors select-none">
+                        <div class="w-7 h-7 rounded-full bg-[#F5820A] text-white font-bold text-[13px] flex items-center justify-center">
+                            {{ $initial }}
+                        </div>
+                        <span class="hidden sm:block font-semibold text-[13px] text-gray-900 dark:text-gray-200">
+                            {{ $fullName }}
+                        </span>
+                        <!-- Icon chevron ditambahkan ID agar bisa dianimasikan berputar saat diklik -->
+                        <svg id="user-menu-icon" class="w-3 h-3 text-gray-400 hidden sm:block transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+
+                    {{-- Dropdown Menu (Hidden secara default) --}}
+                    <div id="user-dropdown" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-lg z-50 hidden opacity-0 scale-95 origin-top-right transition-all duration-200">
+                        <div class="py-1">
+                            <!-- PERBAIKAN: Teks diubah menjadi Profile -->
+                            <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                Profile
+                            </a>
+                            <hr class="my-1 border-gray-100 dark:border-gray-700">
+                            <form action="{{ route('logout') }}" method="POST" class="w-full">
+                                @csrf
+                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium transition-colors">
+                                    Keluar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
             @else
-                <a href="#" class="border border-gray-800 dark:border-gray-600 px-5 py-1.5 rounded-full text-xs font-semibold text-gray-900 dark:text-gray-300 hover:bg-gray-50 transition">
-                    Masuk
-                </a>
+                {{-- Tombol Masuk & Daftar (Jika Belum Login) --}}
+                @if (Route::has('login'))
+                    <a href="{{ route('login') }}" class="border border-gray-800 dark:border-gray-600 px-5 py-1.5 rounded-full text-xs font-semibold text-gray-900 dark:text-gray-300 hover:bg-gray-50 transition">
+                        Masuk
+                    </a>
+                @else
+                    <a href="#" class="border border-gray-800 dark:border-gray-600 px-5 py-1.5 rounded-full text-xs font-semibold text-gray-900 dark:text-gray-300 hover:bg-gray-50 transition">
+                        Masuk
+                    </a>
+                @endif
+
+                @if (Route::has('register'))
+                    <a href="{{ route('register') }}" class="bg-[#1A622A] hover:bg-[#13491f] px-5 py-1.5 rounded-full text-xs font-semibold text-white shadow-sm transition">
+                        Daftar
+                    </a>
+                @else
+                    <a href="#" class="bg-[#1A622A] hover:bg-[#13491f] px-5 py-1.5 rounded-full text-xs font-semibold text-white shadow-sm transition">
+                        Daftar
+                    </a>
+                @endif
             @endif
 
-            @if (Route::has('register'))
-                <a href="{{ route('register') }}" class="bg-[#1A622A] hover:bg-[#13491f] px-5 py-1.5 rounded-full text-xs font-semibold text-white shadow-sm transition">
-                    Daftar
-                </a>
-            @else
-                <a href="#" class="bg-[#1A622A] hover:bg-[#13491f] px-5 py-1.5 rounded-full text-xs font-semibold text-white shadow-sm transition">
-                    Daftar
-                </a>
-            @endif
         </div>
     </header>
 
@@ -104,95 +150,95 @@
             </div>
         </div>
 
-        <section id="produk-kategori" class="mt-12 scroll-mt-24">
-            <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-6">
-                Belanja per Kategori
-            </h2>
-            
-            <div class="grid grid-cols-4 md:grid-cols-8 gap-4">
-                
-                <div class="flex flex-col items-center text-center cursor-pointer group">
-                    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#E8F5EC] dark:bg-emerald-950/40 transition group-hover:scale-105">
-                        <svg class="w-7 h-7 text-[#1A622A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                        </svg>
-                    </div>
-                    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Minyak & Lemak</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center cursor-pointer group">
-                    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#FCECDD] dark:bg-amber-950/20 transition group-hover:scale-105">
-                        <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                        </svg>
-                    </div>
-                    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Beras & Tepung</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center cursor-pointer group">
-                    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#EDEDED] dark:bg-gray-800 transition group-hover:scale-105">
-                        <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                        </svg>
-                    </div>
-                    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Makanan Kaleng</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center cursor-pointer group">
-                    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#8df08d] transition group-hover:scale-105">
-                        <svg class="w-7 h-7 text-[#1A622A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                        </svg>
-                    </div>
-                    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Sabun & Kebersihan</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center cursor-pointer group">
-                    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#D4E0D9] transition group-hover:scale-105">
-                        <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Minuman</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center cursor-pointer group">
-                    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#FCD8B8] transition group-hover:scale-105">
-                        <svg class="w-7 h-7 text-[#cc6a12]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                        </svg>
-                    </div>
-                    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Bumbu Dapur</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center cursor-pointer group">
-                    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#E5E5E5] transition group-hover:scale-105">
-                        <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Mie & Pasta</span>
-                </div>
-
-                <div class="flex flex-col items-center text-center cursor-pointer group">
-                    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#65d065] transition group-hover:scale-105">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <circle cx="5" cy="5" r="2"></circle>
-                            <circle cx="12" cy="5" r="2"></circle>
-                            <circle cx="19" cy="5" r="2"></circle>
-                            <circle cx="5" cy="12" r="2"></circle>
-                            <circle cx="12" cy="12" r="2"></circle>
-                            <circle cx="19" cy="12" r="2"></circle>
-                            <circle cx="5" cy="19" r="2"></circle>
-                            <circle cx="12" cy="19" r="2"></circle>
-                            <circle cx="19" cy="19" r="2"></circle>
-                        </svg>
-                    </div>
-                    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Sembako Lainnya</span>
-                </div>
-
+       <section id="produk-kategori" class="mt-12 scroll-mt-24">
+    <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-6">
+        Belanja per Kategori
+    </h2>
+    
+    <div class="grid grid-cols-4 md:grid-cols-8 gap-4">
+        
+        <a href="{{ route('produk.kategori', 'minyak-lemak') }}" class="flex flex-col items-center text-center cursor-pointer group">
+            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#E8F5EC] dark:bg-emerald-950/40 transition group-hover:scale-105">
+                <svg class="w-7 h-7 text-[#1A622A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
             </div>
-        </section>
+            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Minyak & Lemak</span>
+        </a>
+
+        <a href="{{ route('produk.kategori', 'beras-tepung') }}" class="flex flex-col items-center text-center cursor-pointer group">
+            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#FCECDD] dark:bg-amber-950/20 transition group-hover:scale-105">
+                <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+            </div>
+            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Beras & Tepung</span>
+        </a>
+
+        <a href="{{ route('produk.kategori', 'makanan-kaleng') }}" class="flex flex-col items-center text-center cursor-pointer group">
+            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#EDEDED] dark:bg-gray-800 transition group-hover:scale-105">
+                <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+            </div>
+            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Makanan Kaleng</span>
+        </a>
+
+        <a href="{{ route('produk.kategori', 'sabun-kebersihan') }}" class="flex flex-col items-center text-center cursor-pointer group">
+            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#8df08d] transition group-hover:scale-105">
+                <svg class="w-7 h-7 text-[#1A622A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+            </div>
+            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Sabun & Kebersihan</span>
+        </a>
+
+        <a href="{{ route('produk.kategori', 'minuman') }}" class="flex flex-col items-center text-center cursor-pointer group">
+            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#D4E0D9] transition group-hover:scale-105">
+                <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Minuman</span>
+        </a>
+
+        <a href="{{ route('produk.kategori', 'bumbu-dapur') }}" class="flex flex-col items-center text-center cursor-pointer group">
+            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#FCD8B8] transition group-hover:scale-105">
+                <svg class="w-7 h-7 text-[#cc6a12]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                </svg>
+            </div>
+            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Bumbu Dapur</span>
+        </a>
+
+        <a href="{{ route('produk.kategori', 'mie-pasta') }}" class="flex flex-col items-center text-center cursor-pointer group">
+            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#E5E5E5] transition group-hover:scale-105">
+                <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Mie & Pasta</span>
+        </a>
+
+        <a href="{{ route('produk.kategori', 'sembako-lainnya') }}" class="flex flex-col items-center text-center cursor-pointer group">
+            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#65d065] transition group-hover:scale-105">
+                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <circle cx="5" cy="5" r="2"></circle>
+                    <circle cx="12" cy="5" r="2"></circle>
+                    <circle cx="19" cy="5" r="2"></circle>
+                    <circle cx="5" cy="12" r="2"></circle>
+                    <circle cx="12" cy="12" r="2"></circle>
+                    <circle cx="19" cy="12" r="2"></circle>
+                    <circle cx="5" cy="19" r="2"></circle>
+                    <circle cx="12" cy="19" r="2"></circle>
+                    <circle cx="19" cy="19" r="2"></circle>
+                </svg>
+            </div>
+            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Sembako Lainnya</span>
+        </a>
+
+    </div>
+</section>
 
          <!-- ==================== 1. PROMO SPESIAL HARI INI ==================== -->
         <section id="promo-hari-ini" class="mt-12 scroll-mt-24">
@@ -490,7 +536,6 @@
    <!-- ================================================================= -->
 <!-- SECTION 1: Banner Daftar Jadi Anggota Koperasi 6G -->
 <!-- ================================================================= -->
-<!-- Bagian yang diubah: Ditambahkan id="tentang-kami" dan scroll-mt-24 -->
 <section id="tentang-kami" class="max-w-7xl mx-auto px-4 md:px-6 my-12 scroll-mt-24">
     <div class="bg-gradient-to-r from-[#0D5C34] to-[#14532D] rounded-[2rem] p-8 md:p-12 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-lg">
         
@@ -1099,7 +1144,6 @@ document.addEventListener('DOMContentLoaded', function () {
         history.replaceState(null, '', window.location.pathname + window.location.search);
     }
 
-    // updateUrl: default true. Set false kalau tidak ingin mengubah address bar (misal saat inisialisasi awal dari referrer)
     function setActiveLink(hash, updateUrl = true) {
         const currentHash = hash ? hash.replace('#', '') : '';
         let matched = false;
@@ -1122,7 +1166,6 @@ document.addEventListener('DOMContentLoaded', function () {
             navLinks[0].classList.add(...activeClasses);
         }
 
-        // Update address bar mengikuti section aktif, tanpa reload/scroll jump
         if (updateUrl) {
             const newUrl = currentHash 
                 ? window.location.pathname + window.location.search + '#' + currentHash
@@ -1132,10 +1175,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (cameFromExternalPage && window.location.hash) {
-        setActiveLink(window.location.hash, false); // jangan ubah URL, memang sudah sesuai tujuan
+        setActiveLink(window.location.hash, false);
     } else {
         window.scrollTo(0, 0);
-        setActiveLink('', false); // sudah bersih dari awal, tidak perlu replaceState lagi
+        setActiveLink('', false);
     }
 
     navLinks.forEach(link => {
@@ -1152,7 +1195,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     window.addEventListener('hashchange', function () {
-        setActiveLink(window.location.hash, false); // hash sudah berubah sendiri, tidak perlu replaceState lagi
+        setActiveLink(window.location.hash, false);
     });
 
     const sectionIds = Array.from(navLinks)
@@ -1171,7 +1214,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    setActiveLink('#' + entry.target.id); // update URL mengikuti section yang terlihat
+                    setActiveLink('#' + entry.target.id);
                 }
             });
         }, {
@@ -1189,18 +1232,65 @@ document.addEventListener('DOMContentLoaded', function () {
             const pageHeight = document.documentElement.scrollHeight;
 
             if (window.scrollY < 150) {
-                setActiveLink(''); // balik ke Beranda, URL juga dibersihkan dari hash
+                setActiveLink('');
                 return;
             }
 
             if (scrollPosition >= pageHeight - 50) {
-                setActiveLink('#' + lastHash); // URL jadi #kontak saat di footer
+                setActiveLink('#' + lastHash);
             }
         });
     }
-});
 
-document.addEventListener('DOMContentLoaded', function () {
+    // -----------------------------------------------------
+    // PERBAIKAN: Logika Klik Dropdown User Menu
+    // -----------------------------------------------------
+    const userMenuBtn = document.getElementById('user-menu-button');
+    const userDropdown = document.getElementById('user-dropdown');
+    const userMenuIcon = document.getElementById('user-menu-icon');
+
+    if (userMenuBtn && userDropdown) {
+        userMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isHidden = userDropdown.classList.contains('hidden');
+            
+            if (isHidden) {
+                // Munculkan menu
+                userDropdown.classList.remove('hidden');
+                // Beri sedikit jeda agar transisi Tailwind bisa berjalan
+                setTimeout(() => {
+                    userDropdown.classList.remove('scale-95', 'opacity-0');
+                    userDropdown.classList.add('scale-100', 'opacity-100');
+                    if(userMenuIcon) userMenuIcon.classList.add('rotate-180');
+                }, 10);
+            } else {
+                // Sembunyikan menu
+                userDropdown.classList.remove('scale-100', 'opacity-100');
+                userDropdown.classList.add('scale-95', 'opacity-0');
+                if(userMenuIcon) userMenuIcon.classList.remove('rotate-180');
+                // Tunggu transisi selesai sebelum menambahkan class hidden
+                setTimeout(() => {
+                    userDropdown.classList.add('hidden');
+                }, 200); 
+            }
+        });
+
+        // Menutup dropdown jika user mengklik area lain di luar menu
+        document.addEventListener('click', (e) => {
+            if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                if (!userDropdown.classList.contains('hidden')) {
+                    userDropdown.classList.remove('scale-100', 'opacity-100');
+                    userDropdown.classList.add('scale-95', 'opacity-0');
+                    if(userMenuIcon) userMenuIcon.classList.remove('rotate-180');
+                    setTimeout(() => {
+                        userDropdown.classList.add('hidden');
+                    }, 200);
+                }
+            }
+        });
+    }
+
+    // Timer Promo
     let seconds = 57;
     let minutes = 24;
     let hours = 8;
