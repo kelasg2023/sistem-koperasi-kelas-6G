@@ -15,11 +15,11 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!auth()->check()) {
-            return redirect('/login');
+        if (!session()->has('user')) {
+            return redirect()->route('login');
         }
 
-        if (in_array(auth()->user()->role, $roles)) {
+        if (in_array(session('user.role'), $roles, true)) {
             return $next($request);
         }
 

@@ -39,7 +39,11 @@ class AuthController extends Controller
 
         session(['user' => $result['user']]);
 
-        return redirect()->route('beranda');
+if ($result['user']['role'] === 'admin') {
+    return redirect('/admin/kategori');
+}
+
+return redirect()->route('beranda');
     }
 
     public function showRegister()
