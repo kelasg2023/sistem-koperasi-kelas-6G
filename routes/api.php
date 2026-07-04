@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\BarangController;
+use App\Http\Controllers\KategoriController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -22,6 +24,7 @@ Route::get('/reset-password/{token}', function (string $token, Request $request)
 })->name('password.reset');
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/auto-login', [AuthController::class, 'autoLogin']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
     
@@ -36,6 +39,27 @@ Route::middleware('auth:sanctum')->group(function () {
         // Manajemen User (Admin)
         Route::get('/users', [AuthController::class, 'getUsersAdmin']);
         Route::patch('/users/{username}', [AuthController::class, 'updateUserAdmin']);
+        
+        // Manajemen Voucher (Khusus Admin)
+        Route::prefix('voucher')->group(function () {
+            Route::post('/', [VoucherController::class, 'store']);
+            Route::put('/{id}', [VoucherController::class, 'update']);
+            Route::delete('/{id}', [VoucherController::class, 'destroy']);
+        });
+        
+        // Manajemen Kategori (Khusus Admin)
+        Route::prefix('kategori')->group(function () {
+            Route::post('/', [KategoriController::class, 'store']);
+            Route::put('/{id}', [KategoriController::class, 'update']);
+            Route::delete('/{id}', [KategoriController::class, 'destroy']);
+        });
+
+        // Manajemen Barang (Khusus Admin)
+        Route::prefix('barang')->group(function () {
+            Route::post('/', [BarangController::class, 'store']);
+            Route::put('/{id}', [BarangController::class, 'update']);
+            Route::delete('/{id}', [BarangController::class, 'destroy']);
+        });
         
         Route::get('/dashboard', function (Request $request) {
             return response()->json([
@@ -79,6 +103,34 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
 
+    // Fitur Kategori (Read-only) untuk User / Authenticated
+    Route::prefix('kategori')->group(function () {
+        Route::get('/', [KategoriController::class, 'index']);
+        Route::get('/{id}', [KategoriController::class, 'show']);
+    });
+
+    // Fitur Barang (Read-only) untuk User / Authenticated
+    Route::prefix('barang')->group(function () {
+        Route::get('/', [BarangController::class, 'index']);
+        Route::get('/{id}', [BarangController::class, 'show']);
+    });
+
+    // Fitur Voucher untuk User / Authenticated
+    Route::prefix('voucher')->group(function () {
+        Route::get('/', [VoucherController::class, 'index']);
+        Route::get('/check/{kode}', [VoucherController::class, 'check']);
+        Route::post('/claim', [VoucherController::class, 'claim']);
+        Route::post('/use', [VoucherController::class, 'use']);
+        Route::get('/{id}', [VoucherController::class, 'show']);
+    });
+
+    // Fitur Transaksi (Checkout & Tracking) untuk User / Authenticated
+    Route::prefix('transaction')->group(function () {
+        Route::post('/checkout', [\App\Http\Controllers\TransactionController::class, 'checkout']);
+        Route::get('/history', [\App\Http\Controllers\TransactionController::class, 'history']);
+        Route::get('/{id}/track', [\App\Http\Controllers\TransactionController::class, 'track']);
+    });
+
     // Endpoint dinamis untuk dashboard (berdasarkan role user saat ini)
     Route::get('/dashboard', function (Request $request) {
         $user = $request->user();
@@ -101,16 +153,4 @@ Route::middleware('auth:sanctum')->group(function () {
             ]
         ]);
     });
-});
-
-// Voucher Routes (masih tanpa sanctum middleware dari branch develop)
-Route::prefix('voucher')->group(function () {
-    Route::get('/',                    [VoucherController::class, 'index']);   // GET    /api/voucher
-    Route::post('/',                   [VoucherController::class, 'store']);   // POST   /api/voucher
-    Route::get('/check/{kode}',        [VoucherController::class, 'check']);   // GET    /api/voucher/check/{kode}
-    Route::post('/claim',              [VoucherController::class, 'claim']);   // POST   /api/voucher/claim
-    Route::post('/use',                [VoucherController::class, 'use']);     // POST   /api/voucher/use
-    Route::get('/{id}',                [VoucherController::class, 'show']);    // GET    /api/voucher/{id}
-    Route::put('/{id}',                [VoucherController::class, 'update']);  // PUT    /api/voucher/{id}
-    Route::delete('/{id}',             [VoucherController::class, 'destroy']); // DELETE /api/voucher/{id}
 });

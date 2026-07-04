@@ -41,7 +41,7 @@ class AuthController extends Controller
             $user->username = $request->username;
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
-            $user->role = 'staff'; // Secara default semua register akan menjadi staff (atau ubah sesuai kebutuhan)
+            $user->role = 'customer'; // Secara default semua pendaftar umum akan menjadi customer
             $user->save();
 
             // Insert ke tabel users_profiles menggunakan relasi model
@@ -84,6 +84,7 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
             'password' => 'required|string',
+            'remember' => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -99,13 +100,29 @@ class AuthController extends Controller
             return $this->errorResponse('Username/Email atau password salah', 401);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        // Jika remember me dicentang, token tidak expired (atau expired lama). Jika tidak, expired dalam 2 jam (contoh)
+        $expiresAt = $request->boolean('remember') ? null : now()->addHours(2);
+        
+        $token = $user->createToken('auth_token', ['*'], $expiresAt)->plainTextToken;
 
         return $this->successResponse([
             'user' => $user,
             'access_token' => $token,
-            'token_type' => 'Bearer'
+            'token_type' => 'Bearer',
+            'expires_at' => $expiresAt ? $expiresAt->toDateTimeString() : null,
         ], 'Login berhasil');
+    }
+
+    /**
+     * Auto Login (Memeriksa Bearer Token)
+     */
+    public function autoLogin(Request $request)
+    {
+        $user = $request->user()->load('profile');
+
+        return $this->successResponse([
+            'user' => $user,
+        ], 'Token valid, auto login berhasil');
     }
 
     /**

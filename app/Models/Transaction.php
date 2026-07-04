@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['user_id', 'total_harga', 'status', 'payment_method'])]
+#[Fillable(['user_id', 'total_harga', 'status', 'payment_method', 'alamat_pengiriman', 'jasa_kurir', 'nomor_resi', 'status_pengiriman'])]
 class Transaction extends Model
 {
     protected $table = 'transactions';
