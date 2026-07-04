@@ -72,3 +72,17 @@ Route::post('/logout', function () {
     session()->forget('user');
     return redirect('/');
 })->name('logout');
+
+
+// Rute sementara untuk keperluan desain UI Admin Kategori
+Route::get('/admin/kategori', function () {
+    return view('admin.kategori.index');
+});
+
+Route::get('/admin/kategori/tambah', function () {
+    return view('admin.kategori.create');
+});
+
+Route::get('/admin/kategori/edit', function () {
+    return view('admin.kategori.edit');
+});
