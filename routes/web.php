@@ -167,6 +167,10 @@ Route::get('/riwayat-belanja', function () {
 Route::get('/detail-pesanan', function () {
     return view('templates.user.detail_pesanan');
 })->name('detail-pesanan.index');
+
+Route::get('/pesanan-berhasil', function () {
+    return view('templates.user.feedback_pesanan_berhasil');
+})->name('pesanan-berhasil.index');
 /*
 |--------------------------------------------------------------------------
 | Halaman Admin (Dilindungi middleware role:admin)
