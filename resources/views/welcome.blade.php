@@ -41,14 +41,16 @@
                 <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
             </button>
 
-            <button class="relative text-gray-700 dark:text-gray-300 hover:text-[#1A622A] focus:outline-none mr-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                <span class="absolute -top-1.5 -right-2 bg-[#1A622A] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">
-                    3
-                </span>
-            </button>
+           <a href="{{ route('keranjang.index') }}" class="relative text-gray-700 dark:text-gray-300 hover:text-[#1A622A] focus:outline-none mr-2 block">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+    </svg>
+    
+    {{-- Angka notifikasi keranjang --}}
+    <span class="absolute -top-1.5 -right-2 bg-[#1A622A] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">
+        3
+    </span>
+</a>
 
             <!-- Logika Session Berada di Sini -->
             @if(session()->has('user'))
@@ -157,85 +159,85 @@
     
     <div class="grid grid-cols-4 md:grid-cols-8 gap-4">
         
-        <a href="{{ route('produk.kategori', 'minyak-lemak') }}" class="flex flex-col items-center text-center cursor-pointer group">
-            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#E8F5EC] dark:bg-emerald-950/40 transition group-hover:scale-105">
-                <svg class="w-7 h-7 text-[#1A622A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                </svg>
-            </div>
-            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Minyak & Lemak</span>
-        </a>
+       <a href="{{ route('produk.index', ['kategori' => 'minyak-lemak']) }}" class="flex flex-col items-center text-center cursor-pointer group">
+    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#E8F5EC] dark:bg-emerald-950/40 transition group-hover:scale-105">
+        <svg class="w-7 h-7 text-[#1A622A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+        </svg>
+    </div>
+    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Minyak & Lemak</span>
+</a>
 
-        <a href="{{ route('produk.kategori', 'beras-tepung') }}" class="flex flex-col items-center text-center cursor-pointer group">
-            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#FCECDD] dark:bg-amber-950/20 transition group-hover:scale-105">
-                <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                </svg>
-            </div>
-            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Beras & Tepung</span>
-        </a>
+<a href="{{ route('produk.index', ['kategori' => 'beras-tepung']) }}" class="flex flex-col items-center text-center cursor-pointer group">
+    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#FCECDD] dark:bg-amber-950/20 transition group-hover:scale-105">
+        <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+        </svg>
+    </div>
+    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Beras & Tepung</span>
+</a>
 
-        <a href="{{ route('produk.kategori', 'makanan-kaleng') }}" class="flex flex-col items-center text-center cursor-pointer group">
-            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#EDEDED] dark:bg-gray-800 transition group-hover:scale-105">
-                <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-            </div>
-            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Makanan Kaleng</span>
-        </a>
+<a href="{{ route('produk.index', ['kategori' => 'makanan-kaleng']) }}" class="flex flex-col items-center text-center cursor-pointer group">
+    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#EDEDED] dark:bg-gray-800 transition group-hover:scale-105">
+        <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+    </div>
+    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Makanan Kaleng</span>
+</a>
 
-        <a href="{{ route('produk.kategori', 'sabun-kebersihan') }}" class="flex flex-col items-center text-center cursor-pointer group">
-            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#8df08d] transition group-hover:scale-105">
-                <svg class="w-7 h-7 text-[#1A622A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                </svg>
-            </div>
-            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Sabun & Kebersihan</span>
-        </a>
+<a href="{{ route('produk.index', ['kategori' => 'sabun-kebersihan']) }}" class="flex flex-col items-center text-center cursor-pointer group">
+    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#8df08d] transition group-hover:scale-105">
+        <svg class="w-7 h-7 text-[#1A622A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+        </svg>
+    </div>
+    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Sabun & Kebersihan</span>
+</a>
 
-        <a href="{{ route('produk.kategori', 'minuman') }}" class="flex flex-col items-center text-center cursor-pointer group">
-            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#D4E0D9] transition group-hover:scale-105">
-                <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </div>
-            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Minuman</span>
-        </a>
+<a href="{{ route('produk.index', ['kategori' => 'minuman']) }}" class="flex flex-col items-center text-center cursor-pointer group">
+    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#D4E0D9] transition group-hover:scale-105">
+        <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+    </div>
+    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Minuman</span>
+</a>
 
-        <a href="{{ route('produk.kategori', 'bumbu-dapur') }}" class="flex flex-col items-center text-center cursor-pointer group">
-            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#FCD8B8] transition group-hover:scale-105">
-                <svg class="w-7 h-7 text-[#cc6a12]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                </svg>
-            </div>
-            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Bumbu Dapur</span>
-        </a>
+<a href="{{ route('produk.index', ['kategori' => 'bumbu-dapur']) }}" class="flex flex-col items-center text-center cursor-pointer group">
+    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#FCD8B8] transition group-hover:scale-105">
+        <svg class="w-7 h-7 text-[#cc6a12]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+        </svg>
+    </div>
+    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Bumbu Dapur</span>
+</a>
 
-        <a href="{{ route('produk.kategori', 'mie-pasta') }}" class="flex flex-col items-center text-center cursor-pointer group">
-            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#E5E5E5] transition group-hover:scale-105">
-                <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </div>
-            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Mie & Pasta</span>
-        </a>
+<a href="{{ route('produk.index', ['kategori' => 'mie-pasta']) }}" class="flex flex-col items-center text-center cursor-pointer group">
+    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#E5E5E5] transition group-hover:scale-105">
+        <svg class="w-7 h-7 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+    </div>
+    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Mie & Pasta</span>
+</a>
 
-        <a href="{{ route('produk.kategori', 'sembako-lainnya') }}" class="flex flex-col items-center text-center cursor-pointer group">
-            <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#65d065] transition group-hover:scale-105">
-                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <circle cx="5" cy="5" r="2"></circle>
-                    <circle cx="12" cy="5" r="2"></circle>
-                    <circle cx="19" cy="5" r="2"></circle>
-                    <circle cx="5" cy="12" r="2"></circle>
-                    <circle cx="12" cy="12" r="2"></circle>
-                    <circle cx="19" cy="12" r="2"></circle>
-                    <circle cx="5" cy="19" r="2"></circle>
-                    <circle cx="12" cy="19" r="2"></circle>
-                    <circle cx="19" cy="19" r="2"></circle>
-                </svg>
-            </div>
-            <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Sembako Lainnya</span>
-        </a>
+<a href="{{ route('produk.index', ['kategori' => 'sembako-lainnya']) }}" class="flex flex-col items-center text-center cursor-pointer group">
+    <div class="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center bg-[#65d065] transition group-hover:scale-105">
+        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+            <circle cx="5" cy="5" r="2"></circle>
+            <circle cx="12" cy="5" r="2"></circle>
+            <circle cx="19" cy="5" r="2"></circle>
+            <circle cx="5" cy="12" r="2"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+            <circle cx="19" cy="12" r="2"></circle>
+            <circle cx="5" cy="19" r="2"></circle>
+            <circle cx="12" cy="19" r="2"></circle>
+            <circle cx="19" cy="19" r="2"></circle>
+        </svg>
+    </div>
+    <span class="text-[11px] font-semibold text-gray-800 dark:text-gray-300 mt-2.5">Sembako Lainnya</span>
+</a>
 
     </div>
 </section>

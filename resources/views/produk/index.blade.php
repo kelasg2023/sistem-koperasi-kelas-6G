@@ -55,32 +55,32 @@
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
 
-            <div onclick="setActiveFilter(this,'all')" class="filter-box active">
+            <div onclick="setActiveFilter(this,'all')" class="filter-box" data-kategori-value="all">
                 📦
                 <span>Semua</span>
             </div>
 
-            <div onclick="setActiveFilter(this,'Sembako')" class="filter-box">
+            <div onclick="setActiveFilter(this,'Sembako')" class="filter-box" data-kategori-value="Sembako">
                 🌾
                 <span>Sembako</span>
             </div>
 
-            <div onclick="setActiveFilter(this,'Minuman')" class="filter-box">
+            <div onclick="setActiveFilter(this,'Minuman')" class="filter-box" data-kategori-value="Minuman">
                 🥤
                 <span>Minuman</span>
             </div>
 
-            <div onclick="setActiveFilter(this,'Sayuran')" class="filter-box">
+            <div onclick="setActiveFilter(this,'Sayuran')" class="filter-box" data-kategori-value="Sayuran">
                 🥦
                 <span>Sayuran</span>
             </div>
 
-            <div onclick="setActiveFilter(this,'Buah')" class="filter-box">
+            <div onclick="setActiveFilter(this,'Buah')" class="filter-box" data-kategori-value="Buah">
                 🍎
                 <span>Buah</span>
             </div>
 
-            <div onclick="setActiveFilter(this,'Minyak')" class="filter-box">
+            <div onclick="setActiveFilter(this,'Minyak')" class="filter-box" data-kategori-value="Minyak">
                 🛢️
                 <span>Minyak</span>
             </div>
@@ -293,6 +293,28 @@ card.style.display="none";
 document.getElementById('jumlahProduk').innerHTML=jumlah;
 
 }
+
+// Aktifkan filter otomatis kalau halaman ini dibuka lewat link kategori
+// (misalnya dari dashboard) yang mengirim slug kategori dari server.
+document.addEventListener('DOMContentLoaded', function () {
+    const activeKategoriName = @json($activeKategoriName ?? null);
+
+    if (activeKategoriName) {
+        const targetBox = document.querySelector(
+            `.filter-box[data-kategori-value="${activeKategoriName}"]`
+        );
+        if (targetBox) {
+            setActiveFilter(targetBox, activeKategoriName);
+            return;
+        }
+    }
+
+    // Default: tampilkan "Semua" sebagai aktif
+    const allBox = document.querySelector('.filter-box[data-kategori-value="all"]');
+    if (allBox) {
+        setActiveFilter(allBox, 'all');
+    }
+});
 
 </script>
 

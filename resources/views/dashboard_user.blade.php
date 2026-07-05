@@ -8,7 +8,6 @@
 
         {{-- HERO --}}
         <div class="bg-gradient-to-br from-[#1E5C2F] to-[#2D7A42] rounded-2xl p-5 sm:p-7 lg:p-8 text-white relative overflow-hidden mb-5 sm:mb-6">
-            {{-- Hiasan Background Hero --}}
             <div class="absolute right-8 top-1/2 -translate-y-1/2 w-24 h-24 border-[20px] border-white/10 rounded-full hidden sm:block"></div>
             <i class="fa-solid fa-seedling absolute right-12 top-1/2 -translate-y-1/2 text-5xl text-white/20 hidden sm:block"></i>
             
@@ -21,22 +20,50 @@
 
         {{-- STATS --}}
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-7 sm:mb-8">
-            <div class="bg-white rounded-2xl p-3.5 sm:p-4 border border-gray-200">
-                <div class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:mb-2 flex items-center gap-1.5"><i class="fa-solid fa-bag-shopping text-[#2D7A42]"></i> Total Belanja</div>
-                <div class="text-xl sm:text-2xl font-extrabold text-gray-900 leading-none">Rp 1.250<span class="text-xs sm:text-[13px] font-semibold text-gray-500">k</span></div>
-            </div>
-            <div class="bg-white rounded-2xl p-3.5 sm:p-4 border border-gray-200">
-                <div class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:mb-2 flex items-center gap-1.5"><i class="fa-solid fa-ticket text-[#F5820A]"></i> Voucher</div>
-                <div class="text-xl sm:text-2xl font-extrabold text-gray-900 leading-none">5 <span class="text-xs sm:text-[13px] font-semibold text-gray-500">Tersedia</span></div>
-            </div>
-            <div class="bg-white rounded-2xl p-3.5 sm:p-4 border border-gray-200">
-                <div class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:mb-2 flex items-center gap-1.5"><i class="fa-solid fa-piggy-bank text-blue-500"></i> Simpanan</div>
-                <div class="text-xl sm:text-2xl font-extrabold text-gray-900 leading-none">Rp 4.500<span class="text-xs sm:text-[13px] font-semibold text-gray-500">k</span></div>
-            </div>
-            <div class="bg-white rounded-2xl p-3.5 sm:p-4 border border-gray-200">
-                <div class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:mb-2 flex items-center gap-1.5"><i class="fa-solid fa-star text-amber-500"></i> Poin</div>
-                <div class="text-xl sm:text-2xl font-extrabold text-gray-900 leading-none">840 <span class="text-xs sm:text-[13px] font-semibold text-gray-500">Pts</span></div>
-            </div>
+           <a href="{{ route('total-belanja.index') }}" class="block bg-white rounded-2xl p-3.5 sm:p-4 border border-gray-200 hover:border-[#2D7A42] hover:shadow-md transition-all cursor-pointer group">
+    <div class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:mb-2 flex items-center gap-1.5">
+        <i class="fa-solid fa-bag-shopping text-[#2D7A42]"></i> Total Belanja
+    </div>
+    <div class="flex items-center justify-between">
+        <div class="text-xl sm:text-2xl font-extrabold text-gray-900 leading-none group-hover:text-[#2D7A42] transition-colors">
+            Rp 1.250<span class="text-xs sm:text-[13px] font-semibold text-gray-500 group-hover:text-[#2D7A42]/70">k</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-[#2D7A42] transition-colors text-sm"></i>
+    </div>
+</a>
+            <a href="{{ route('voucher.index') }}" class="block bg-white rounded-2xl p-3.5 sm:p-4 border border-gray-200 hover:border-[#F5820A] hover:shadow-md transition-all cursor-pointer group">
+    <div class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:mb-2 flex items-center gap-1.5">
+        <i class="fa-solid fa-ticket text-[#F5820A]"></i> Voucher
+    </div>
+    <div class="flex items-center justify-between">
+        <div class="text-xl sm:text-2xl font-extrabold text-gray-900 leading-none group-hover:text-[#F5820A] transition-colors">
+            5 <span class="text-xs sm:text-[13px] font-semibold text-gray-500 group-hover:text-[#F5820A]/70">Tersedia</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-[#F5820A] transition-colors text-sm"></i>
+    </div>
+</a>
+           <a href="{{ route('simpanan.index') }}" class="block bg-white rounded-2xl p-3.5 sm:p-4 border border-gray-200 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer group">
+    <div class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:mb-2 flex items-center gap-1.5">
+        <i class="fa-solid fa-piggy-bank text-blue-500"></i> Simpanan
+    </div>
+    <div class="flex items-center justify-between">
+        <div class="text-xl sm:text-2xl font-extrabold text-gray-900 leading-none group-hover:text-blue-500 transition-colors">
+            Rp 4.500<span class="text-xs sm:text-[13px] font-semibold text-gray-500 group-hover:text-blue-500/70">k</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-blue-500 transition-colors text-sm"></i>
+    </div>
+</a>
+            <a href="{{ route('poin.index') }}" class="block bg-white rounded-2xl p-3.5 sm:p-4 border border-gray-200 hover:border-amber-500 hover:shadow-md transition-all cursor-pointer group">
+    <div class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:mb-2 flex items-center gap-1.5">
+        <i class="fa-solid fa-star text-amber-500"></i> Poin
+    </div>
+    <div class="flex items-center justify-between">
+        <div class="text-xl sm:text-2xl font-extrabold text-gray-900 leading-none group-hover:text-amber-600 transition-colors">
+            840 <span class="text-xs sm:text-[13px] font-semibold text-gray-500 group-hover:text-amber-500/70">Pts</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-amber-500 transition-colors text-sm"></i>
+    </div>
+</a>
         </div>
 
         {{-- KATEGORI --}}
@@ -51,24 +78,29 @@
         {{-- Scroll horizontal dengan padding kanan agar item terakhir tidak terpotong --}}
         <div class="flex gap-4 sm:gap-6 mb-7 sm:mb-8 overflow-x-auto pb-2 scrollbar-hide -mx-3 sm:mx-0 px-3 sm:px-0">
             @php
+                // Catatan: 'slug' di bawah ini disesuaikan dengan daftar kategori
+                // yang ada di ProductController (categoryList()). Beberapa label
+                // (Daging, Alat Tulis, Cemilan) belum punya slug spesifik yang
+                // benar-benar cocok, jadi sementara diarahkan ke 'sembako-lainnya'.
+                // Sesuaikan lagi kalau kamu menambah kategori baru yang lebih pas.
                 $kategoris = [
-                    ['icon' => '🌾', 'label' => 'Sembako'], 
-                    ['icon' => '🥦', 'label' => 'Sayuran'],
-                    ['icon' => '🥩', 'label' => 'Daging'], 
-                    ['icon' => '🍎', 'label' => 'Buah'],
-                    ['icon' => '🥛', 'label' => 'Susu'], 
-                    ['icon' => '🧹', 'label' => 'Kebersihan'],
-                    ['icon' => '✏️', 'label' => 'Alat Tulis'],
-                    ['icon' => '🍪', 'label' => 'Cemilan'],
+                    ['icon' => '🌾', 'label' => 'Sembako', 'slug' => 'sembako-lainnya'],
+                    ['icon' => '🥦', 'label' => 'Sayuran', 'slug' => 'sembako-lainnya'],
+                    ['icon' => '🥩', 'label' => 'Daging', 'slug' => 'sembako-lainnya'],
+                    ['icon' => '🍎', 'label' => 'Buah', 'slug' => 'sembako-lainnya'],
+                    ['icon' => '🥛', 'label' => 'Susu', 'slug' => 'minuman'],
+                    ['icon' => '🧹', 'label' => 'Kebersihan', 'slug' => 'sabun-kebersihan'],
+                    ['icon' => '✏️', 'label' => 'Alat Tulis', 'slug' => 'sembako-lainnya'],
+                    ['icon' => '🍪', 'label' => 'Cemilan', 'slug' => 'sembako-lainnya'],
                 ];
             @endphp
             @foreach($kategoris as $kat)
-            <div class="flex flex-col items-center gap-2 cursor-pointer group min-w-[64px] sm:min-w-[80px] shrink-0">
+            <a href="{{ route('produk.kategori', $kat['slug']) }}" class="flex flex-col items-center gap-2 cursor-pointer group min-w-[64px] sm:min-w-[80px] shrink-0">
                 <div class="w-[56px] h-[56px] sm:w-[70px] sm:h-[70px] rounded-2xl bg-[#E8F5EC] flex items-center justify-center text-xl sm:text-2xl group-hover:-translate-y-1 group-hover:bg-[#d1edda] transition-all shadow-sm">
                     {{ $kat['icon'] }}
                 </div>
                 <span class="text-[11px] sm:text-[12px] font-semibold text-gray-600 whitespace-nowrap">{{ $kat['label'] }}</span>
-            </div>
+            </a>
             @endforeach
         </div>
 
@@ -121,43 +153,54 @@
     {{-- KOLOM KANAN --}}
     <div class="flex flex-col gap-4 order-2 lg:order-2">
 
-        {{-- PESANAN BERJALAN --}}
-        <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5">
-            <div class="text-[13px] sm:text-sm font-extrabold text-gray-900 mb-3 sm:mb-4 flex items-center justify-between flex-wrap gap-1.5">
-                Pesanan Berjalan
-                <span class="bg-green-100 text-green-600 text-[10px] font-bold px-2 py-0.5 rounded-full">1 AKTIF</span>
-            </div>
-            <div class="flex items-center gap-3 p-3 bg-[#F6F8F6] rounded-xl mb-3">
-                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#E8F5EC] text-[#2D7A42] flex items-center justify-center text-base sm:text-lg shrink-0"><i class="fa-solid fa-truck"></i></div>
-                <div class="min-w-0">
-                    <div class="text-[9px] sm:text-[10px] font-bold text-[#2D7A42] uppercase tracking-wider">SEDANG DIKIRIM</div>
-                    <div class="text-[13px] sm:text-sm font-bold text-gray-900 truncate">#TRX-98234</div>
-                </div>
-            </div>
-            <div class="my-2.5">
-                <div class="flex justify-between text-[10px] sm:text-[11px] text-gray-500 font-semibold mb-1.5">
-                    <span>Progress</span>
-                    <span class="text-[#2D7A42]">75%</span>
-                </div>
-                <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                    <div class="h-full bg-gradient-to-r from-[#2D7A42] to-green-500 rounded-full w-[75%]"></div>
-                </div>
-            </div>
-            <div class="text-[10px] sm:text-[11px] text-gray-500 flex items-center gap-1 mt-1.5 mb-4 flex-wrap">
-                <i class="fa-regular fa-clock"></i>
-                Estimasi tiba dalam: <strong class="text-gray-900">15 Menit</strong>
-            </div>
-            <a href="#" class="block text-center text-xs sm:text-[13px] font-bold text-[#2D7A42] p-2.5 border-2 border-[#2D7A42] rounded-xl hover:bg-[#2D7A42] hover:text-white transition-colors">
-                <i class="fa-solid fa-location-dot"></i> Lacak Pengiriman
-            </a>
-        </div>
+       {{-- PESANAN BERJALAN --}}
+<div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-sm">
+    <div class="text-[13px] sm:text-sm font-extrabold text-gray-900 mb-3 sm:mb-4 flex items-center justify-between flex-wrap gap-1.5">
+        Pesanan Berjalan
+        <span class="bg-green-100 text-green-600 text-[10px] font-bold px-2 py-0.5 rounded-full">1 AKTIF</span>
+    </div>
 
+    {{-- Kotak ini sekarang menjadi Link ke Detail Pesanan --}}
+    <a href="{{ route('detail-pesanan.index') }}" class="flex items-center gap-3 p-3 bg-[#F6F8F6] rounded-xl mb-3 hover:bg-[#E8F5EC] transition-colors border border-transparent hover:border-[#2D7A42]/20 group">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#E8F5EC] text-[#2D7A42] flex items-center justify-center text-base sm:text-lg shrink-0 group-hover:bg-white transition-colors">
+            <i class="fa-solid fa-truck"></i>
+        </div>
+        <div class="min-w-0">
+            <div class="text-[9px] sm:text-[10px] font-bold text-[#2D7A42] uppercase tracking-wider mb-0.5">SEDANG DIKIRIM</div>
+            <div class="text-[13px] sm:text-sm font-bold text-gray-900 truncate group-hover:text-[#2D7A42] transition-colors">#TRX-98234</div>
+        </div>
+        <i class="fa-solid fa-chevron-right ml-auto text-gray-400 text-xs"></i>
+    </a>
+
+    {{-- Progress Bar --}}
+    <div class="my-3">
+        <div class="flex justify-between text-[10px] sm:text-[11px] text-gray-500 font-semibold mb-1.5">
+            <span>Progress</span>
+            <span class="text-[#2D7A42]">75%</span>
+        </div>
+        <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-[#2D7A42] to-green-500 rounded-full w-[75%]"></div>
+        </div>
+    </div>
+
+    {{-- Estimasi Waktu --}}
+    <div class="text-[10px] sm:text-[11px] text-gray-500 flex items-center gap-1.5 mt-2 mb-4">
+        <i class="fa-regular fa-clock"></i>
+        Estimasi tiba dalam: <strong class="text-gray-900">15 Menit</strong>
+    </div>
+
+    {{-- Tombol Lacak (Terhubung ke Detail Pesanan) --}}
+    <a href="{{ route('detail-pesanan.index') }}" class="block text-center text-xs sm:text-[13px] font-bold text-[#2D7A42] p-2.5 border-2 border-[#2D7A42] rounded-xl hover:bg-[#2D7A42] hover:text-white transition-all shadow-sm">
+        <i class="fa-solid fa-location-dot mr-1"></i> Lacak Pengiriman
+    </a>
+</div>
         {{-- RIWAYAT BELANJA --}}
         <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5">
             <div class="text-[13px] sm:text-sm font-extrabold text-gray-900 mb-3 sm:mb-4 flex items-center justify-between">
                 Riwayat Belanja
-                <a href="#" class="text-[11px] sm:text-[12px] font-semibold text-[#2D7A42] hover:underline shrink-0">Lihat Semua</a>
-            </div>
+                <a href="{{ route('riwayat-belanja.index') }}" class="text-[11px] sm:text-[12px] font-semibold text-[#2D7A42] hover:underline shrink-0">Lihat Semua</a>
+    </div>
+            
             @php
                 $riwayats = [
                     ['icon' => '🌾', 'nama' => 'Sembako', 'date' => '12 Des 2025 • 8 Produk', 'harga' => 'Rp 420.000'],
