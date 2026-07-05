@@ -47,6 +47,7 @@ def populate_database():
         conn.execute(text("SET FOREIGN_KEY_CHECKS = 0;")) # Matikan FK sementara untuk membersihkan data lama
         conn.execute(text("TRUNCATE TABLE transaction_details;"))
         conn.execute(text("TRUNCATE TABLE transactions;"))
+        conn.execute(text("TRUNCATE TABLE customers;"))
         conn.execute(text("TRUNCATE TABLE barang;"))
         conn.execute(text("TRUNCATE TABLE kategori;"))
         conn.execute(text("TRUNCATE TABLE users;"))
@@ -80,9 +81,16 @@ def populate_database():
         # C. Users
         logger.info("Mengisi tabel master: 'users' (100 anggota)...")
         for u_id in range(1, 101):
-            conn.execute(text("INSERT INTO users (id_users, username, password, role) VALUES "
-                              "(:id, :user, 'password123', 'staff');"),
-                         {"id": u_id, "user": f"anggota_{u_id:03d}"})
+            conn.execute(text("INSERT INTO users (id_users, username, email, password, role) VALUES "
+                              "(:id, :user, :email, 'password123', 'customer');"),
+                         {"id": u_id, "user": f"anggota_{u_id:03d}", "email": f"anggota_{u_id:03d}@koperasi6g.test"})
+        
+        # D. Customers records untuk setiap anggota
+        logger.info("Mengisi tabel 'customers' untuk setiap anggota...")
+        for u_id in range(1, 101):
+            conn.execute(text("INSERT INTO customers (user_id, point, is_member) VALUES "
+                              "(:u_id, 0, 0);"),
+                         {"u_id": u_id})
 
     # ── 4. Sinkronisasi Data Transaksi (transactions) ─────────────────────────
     # Ambil data transaksi unik dari df_fraud untuk dimasukkan ke tabel `transactions`
