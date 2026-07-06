@@ -249,6 +249,7 @@ Service ini membaca tabel-tabel berikut dari MySQL. Struktur ini **harus cocok**
 - SQL ditulis sebagai raw query dengan `text()` dari SQLAlchemy.
 - Fraud check memakai model tersimpan melalui `model_service` (singleton).
 - Rekomendasi dan stok dihitung real-time dari data transaksi historis.
+- **Terkini**: Sinkronisasi arsitektur dan kapabilitas telah teruji dan terintegrasi dengan baik ke dalam alur kerja Backend PHP utama.
 
 ---
 
