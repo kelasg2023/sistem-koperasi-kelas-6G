@@ -42,7 +42,7 @@ class SendEmailMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.send_email',
+            markdown: 'emails.send_email',
         );
     }
 

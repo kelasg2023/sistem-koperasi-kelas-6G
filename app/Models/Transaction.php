@@ -16,5 +16,6 @@ class Transaction extends Model
     public function user() { return $this->belongsTo(User::class, 'user_id', 'id_users'); }
     public function transactionDetails() { return $this->hasMany(TransactionDetail::class, 'transaction_id', 'transaction_id'); }
     public function audit() { return $this->hasOne(Audit::class, 'transaction_id', 'transaction_id'); }
+    public function trackingTimeline() { return $this->hasMany(TransactionTracking::class, 'transaction_id', 'transaction_id')->orderBy('created_at', 'desc'); }
 
 }

@@ -6,21 +6,21 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\MLController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.email');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
+// Webhook Midtrans
+Route::post('/wallet/webhook', [\App\Http\Controllers\WalletController::class, 'webhook']);
+
 // Rute ini dibutuhkan oleh sistem notifikasi Laravel untuk men-generate link di dalam email
 Route::get('/reset-password/{token}', function (string $token, Request $request) {
-    // Di aplikasi nyata (SPA/Frontend terpisah), rute ini harusnya me-redirect ke URL Frontend kamu
-    // Misalnya: return redirect()->away('http://localhost:3000/reset-password?token=' . $token . '&email=' . $request->email);
-    return response()->json([
-        'message' => 'Gunakan token ini beserta email baru dan konfirmasi password untuk di POST ke /api/reset-password',
-        'token' => $token,
-        'email' => $request->email
-    ]);
+    $frontendUrl = env('FRONTEND_URL', 'http://localhost:8100');
+    return redirect()->away($frontendUrl . '/reset-password/' . $token . '?email=' . urlencode($request->email));
 })->name('password.reset');
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -37,8 +37,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/reset-password', [AuthController::class, 'adminResetPassword']);
         
         // Manajemen User (Admin)
-        Route::get('/users', [AuthController::class, 'getUsersAdmin']);
-        Route::patch('/users/{username}', [AuthController::class, 'updateUserAdmin']);
+        Route::get('/users-legacy', [AuthController::class, 'getUsersAdmin']);
+        Route::patch('/users-legacy/{username}', [AuthController::class, 'updateUserAdmin']);
+        
+        // CRUD User (Khusus Admin)
+        Route::apiResource('users', UserController::class);
         
         // Manajemen Voucher (Khusus Admin)
         Route::prefix('voucher')->group(function () {
@@ -60,47 +63,43 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('/{id}', [BarangController::class, 'update']);
             Route::delete('/{id}', [BarangController::class, 'destroy']);
         });
-        
-        Route::get('/dashboard', function (Request $request) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Admin Dashboard',
-                'data' => ['total_users' => 10, 'pending_approvals' => 2]
-            ]);
+
+        // Prediksi & Alert Stok ML (Khusus Admin)
+        Route::prefix('stok')->group(function () {
+            Route::get('/prediksi', [MLController::class, 'getStokPrediksi']);
+            Route::get('/alert', [MLController::class, 'getStokAlert']);
+            Route::post('/safety/{id}', [MLController::class, 'getSafetyStock']);
         });
+        
+        Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'getAdminDashboard']);
+    });
+
+    // Endpoint khusus admin dan staff
+    Route::middleware('role:admin,staff')->group(function () {
+        // Transaksi (View all & Update status)
+        Route::get('/transactions/all', [\App\Http\Controllers\TransactionController::class, 'getAllTransactions']);
+        Route::put('/transaction/{id}/status', [\App\Http\Controllers\TransactionController::class, 'updateStatus']);
     });
 
     // Endpoint khusus staff
     Route::middleware('role:staff')->prefix('staff')->group(function () {
-        Route::get('/dashboard', function (Request $request) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Staff Dashboard',
-                'data' => ['sales_today' => 50]
-            ]);
-        });
+        Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'getStaffDashboard']);
     });
 
     // Endpoint khusus supplier
     Route::middleware('role:supplier')->prefix('supplier')->group(function () {
-        Route::get('/dashboard', function (Request $request) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Supplier Dashboard',
-                'data' => ['pending_orders' => 5]
-            ]);
-        });
+        Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'getSupplierDashboard']);
+        Route::get('/barang', [\App\Http\Controllers\SupplierFeatureController::class, 'getBarangList']);
+        Route::post('/barang', [\App\Http\Controllers\SupplierFeatureController::class, 'storeBarang']);
+        Route::post('/kategori', [\App\Http\Controllers\SupplierFeatureController::class, 'storeKategori']);
+        Route::post('/pasokan', [\App\Http\Controllers\SupplierFeatureController::class, 'addPasokan'])->middleware(['idempotent']);
     });
 
     // Endpoint khusus manager
     Route::middleware('role:manager')->prefix('manager')->group(function () {
-        Route::get('/dashboard', function (Request $request) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Manager Dashboard',
-                'data' => ['monthly_revenue' => 10000000]
-            ]);
-        });
+        Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'getManagerDashboard']);
+        Route::get('/reports/sales', [\App\Http\Controllers\ReportController::class, 'getSalesReports']);
+        Route::get('/reports/customers', [\App\Http\Controllers\ReportController::class, 'getCustomerReports']);
     });
 
     // Fitur Kategori (Read-only) untuk User / Authenticated
@@ -115,6 +114,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [BarangController::class, 'show']);
     });
 
+    // Fitur Rekomendasi & Analitik (Machine Learning)
+    Route::get('/produk/laris', [MLController::class, 'getProdukLaris']);
+    Route::get('/rekomendasi', [MLController::class, 'getRekomendasi']);
+
     // Fitur Voucher untuk User / Authenticated
     Route::prefix('voucher')->group(function () {
         Route::get('/', [VoucherController::class, 'index']);
@@ -124,33 +127,36 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [VoucherController::class, 'show']);
     });
 
+    // Fitur Wallet
+    Route::post('/wallet/topup', [\App\Http\Controllers\WalletController::class, 'topup'])->middleware(['idempotent', 'throttle:10,1']);
+    Route::post('/wallet/check-status', [\App\Http\Controllers\WalletController::class, 'checkStatus']);
+
     // Fitur Transaksi (Checkout & Tracking) untuk User / Authenticated
     Route::prefix('transaction')->group(function () {
-        Route::post('/checkout', [\App\Http\Controllers\TransactionController::class, 'checkout']);
+        Route::post('/checkout', [\App\Http\Controllers\TransactionController::class, 'checkout'])->middleware(['idempotent', 'throttle:10,1']);
         Route::get('/history', [\App\Http\Controllers\TransactionController::class, 'history']);
         Route::get('/{id}/track', [\App\Http\Controllers\TransactionController::class, 'track']);
+        Route::post('/{id}/cancel', [\App\Http\Controllers\TransactionController::class, 'cancel']);
     });
 
     // Endpoint dinamis untuk dashboard (berdasarkan role user saat ini)
-    Route::get('/dashboard', function (Request $request) {
-        $user = $request->user();
-        
-        // Kalian bisa menambahkan data spesifik per role di sini nantinya
-        $dashboardData = [];
-        if ($user->role === 'admin') {
-            $dashboardData = ['total_users' => 10, 'pending_approvals' => 2]; // Contoh
-        } elseif ($user->role === 'staff') {
-            $dashboardData = ['sales_today' => 50]; // Contoh
-        }
+    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'getDynamicDashboard']);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Selamat datang di dashboard ' . ucfirst($user->role),
-            'data' => [
-                'user' => $user,
-                'role' => $user->role,
-                'dashboard_metrics' => $dashboardData
-            ]
+    // Akses File Private (Gambar Profil, Resi, dll)
+    Route::get('/file/private/{path}', function (string $path) {
+        // Mencegah directory traversal attack
+        $path = str_replace('..', '', $path);
+        
+        $fullPath = storage_path('app/private/' . $path);
+        
+        if (!file_exists($fullPath)) {
+            abort(404, 'File tidak ditemukan');
+        }
+        
+        $mimeType = \Illuminate\Support\Facades\File::mimeType($fullPath);
+        
+        return response()->file($fullPath, [
+            'Content-Type' => $mimeType
         ]);
-    });
+    })->where('path', '.*');
 });

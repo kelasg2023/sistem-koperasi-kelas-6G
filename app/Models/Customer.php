@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['user_id', 'point'])]
+#[Fillable(['user_id', 'point', 'is_member'])]
 class Customer extends Model
 {
     protected $table = 'customers';

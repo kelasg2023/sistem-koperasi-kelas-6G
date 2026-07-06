@@ -20,6 +20,12 @@ return new class extends Migration
             $table->text('deskripsi')->nullable();
             $table->foreignId('id_kategori')->constrained('kategori', 'id_kategori')->onDelete('restrict');
             $table->softDeletes();
+            
+            // Indexes for faceted search optimization
+            $table->index('id_kategori');
+            $table->index('harga');
+            $table->index('stok');
+            $table->fullText(['nama', 'deskripsi']);
         });
     }
 

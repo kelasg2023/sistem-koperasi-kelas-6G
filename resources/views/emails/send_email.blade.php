@@ -1,9 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ $mailSubject }}</title>
-</head>
-<body>
-    <p>{{ $mailContent }}</p>
-</body>
-</html>
+<x-mail::message>
+# {{ $mailSubject }}
+
+Halo,
+
+{{ $mailContent }}
+
+Terima kasih,<br>
+Tim {{ config('app.name', 'Sistem Koperasi 6G') }}
+</x-mail::message>

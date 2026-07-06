@@ -99,17 +99,16 @@ class AuthController extends Controller
         if (!$user || !Hash::check($request->password, $user->password)) {
             return $this->errorResponse('Username/Email atau password salah', 401);
         }
-
-        // Jika remember me dicentang, token tidak expired (atau expired lama). Jika tidak, expired dalam 2 jam (contoh)
-        $expiresAt = $request->boolean('remember') ? null : now()->addHours(2);
         
+        $remember = $request->boolean('remember', false);
+        $expiresAt = $remember ? now()->addDays(7) : now()->addDay();
+
         $token = $user->createToken('auth_token', ['*'], $expiresAt)->plainTextToken;
 
         return $this->successResponse([
             'user' => $user,
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'expires_at' => $expiresAt ? $expiresAt->toDateTimeString() : null,
         ], 'Login berhasil');
     }
 
