@@ -1,88 +1,73 @@
 @extends('layouts.app')
 
+@section('no-sidebar', true)
+
 @section('content')
-<div class="container mx-auto px-6 py-8">
+<div class="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-7xl">
 
     {{-- Header --}}
-    <div class="bg-gradient-to-r from-green-700 to-green-500 rounded-3xl p-8 text-white mb-8 shadow-lg">
-        <h1 class="text-4xl font-bold mb-2">
+    <div class="bg-gradient-to-r from-green-700 to-green-500 rounded-3xl p-6 sm:p-8 text-white mb-6 sm:mb-8 shadow-lg">
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2">
             🛒 Produk Koperasi 6G
         </h1>
-        <p class="opacity-90">
+        <p class="opacity-90 text-sm sm:text-base">
             Temukan kebutuhan sehari-hari dengan harga terbaik khusus anggota koperasi.
         </p>
     </div>
 
     {{-- INFO FILTER --}}
-    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
+    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
 
         <div>
-            <h2 class="text-2xl font-bold text-gray-800">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-800">
                 Katalog Produk
             </h2>
 
-            <p class="text-gray-500">
+            <p class="text-gray-500 text-sm sm:text-base">
                 Kategori aktif :
-                <span id="kategoriAktif"
-                    class="font-bold text-green-600">
-                    Semua
-                </span>
+                <span id="kategoriAktif" class="font-bold text-green-600">Semua</span>
             </p>
         </div>
 
-        <div class="mt-3 md:mt-0">
-
-            <span
-                class="bg-green-100 text-green-700 px-4 py-2 rounded-full font-semibold">
-
-                Total Produk :
-                <span id="jumlahProduk">
-                    {{ count($products) }}
-                </span>
-
+        <div>
+            <span class="bg-green-100 text-green-700 px-4 py-2 rounded-full font-semibold text-sm sm:text-base inline-block">
+                Total Produk : <span id="jumlahProduk">{{ count($products) }}</span>
             </span>
-
         </div>
 
     </div>
 
     {{-- FILTER --}}
-    <div class="bg-white rounded-3xl shadow-lg p-6 mb-8">
+    <div class="bg-white rounded-3xl shadow-lg p-5 sm:p-6 mb-6 sm:mb-8 overflow-x-auto scrollbar-hide">
 
-        <h3 class="font-bold text-lg mb-5">
+        <h3 class="font-bold text-lg mb-4 sm:mb-5">
             Filter Kategori
         </h3>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
+        <div class="flex sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-5 min-w-max sm:min-w-0">
 
             <div onclick="setActiveFilter(this,'all')" class="filter-box" data-kategori-value="all">
-                📦
-                <span>Semua</span>
+                📦 <span>Semua</span>
             </div>
 
             <div onclick="setActiveFilter(this,'Sembako')" class="filter-box" data-kategori-value="Sembako">
-                🌾
-                <span>Sembako</span>
+                🌾 <span>Sembako</span>
             </div>
 
             <div onclick="setActiveFilter(this,'Minuman')" class="filter-box" data-kategori-value="Minuman">
-                🥤
-                <span>Minuman</span>
+                🥤 <span>Minuman</span>
             </div>
 
             <div onclick="setActiveFilter(this,'Sayuran')" class="filter-box" data-kategori-value="Sayuran">
-                🥦
-                <span>Sayuran</span>
+                🥦 <span>Sayuran</span>
             </div>
 
             <div onclick="setActiveFilter(this,'Buah')" class="filter-box" data-kategori-value="Buah">
-                🍎
-                <span>Buah</span>
+                🍎 <span>Buah</span>
             </div>
 
             <div onclick="setActiveFilter(this,'Minyak')" class="filter-box" data-kategori-value="Minyak">
-                🛢️
-                <span>Minyak</span>
+                🛢️ <span>Minyak</span>
             </div>
 
         </div>
@@ -90,81 +75,48 @@
     </div>
 
     {{-- GRID PRODUK --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-7"
-        id="produkGrid">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-7" id="produkGrid">
 
         @foreach($products as $product)
+        <div class="produk-card bg-white rounded-3xl overflow-hidden shadow hover:shadow-2xl transition duration-300 hover:-translate-y-2 flex flex-col h-full" data-kategori="{{ $product['kategori'] }}">
 
-        <div
-            class="produk-card bg-white rounded-3xl overflow-hidden shadow hover:shadow-2xl transition duration-300 hover:-translate-y-2"
-            data-kategori="{{ $product['kategori'] }}">
+            <img src="https://picsum.photos/seed/{{ $product['id'] ?? rand() }}/400/300" class="w-full h-48 sm:h-64 object-cover" alt="{{ $product['nama'] }}">
 
-            <img
-                src="{{ asset('images/'.$product['gambar']) }}"
-                class="w-full h-64 object-cover">
+            <div class="p-4 sm:p-5 flex flex-col flex-grow">
 
-            <div class="p-5">
-
-                <div class="flex justify-between items-center">
-
-                    <span
-                        class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
-
-                        {{ $product['icon'] }}
-                        {{ $product['kategori'] }}
-
+                <div class="flex justify-between items-center mb-3">
+                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold whitespace-nowrap">
+                        {{ $product['icon'] }} {{ $product['kategori'] }}
                     </span>
-
-                    <span class="text-yellow-500">
+                    <span class="text-yellow-500 text-xs sm:text-sm font-semibold">
                         ⭐ 4.8
                     </span>
-
                 </div>
 
-                <h2 class="font-bold text-lg mt-4">
-
+                <h2 class="font-bold text-base sm:text-lg text-gray-900 leading-tight">
                     {{ $product['nama'] }}
-
                 </h2>
 
-                <p class="text-gray-500 text-sm mt-2">
-
-                    {{ Str::limit($product['deskripsi'],70) }}
-
+                <p class="text-gray-500 text-xs sm:text-sm mt-2 flex-grow">
+                    {{ Str::limit($product['deskripsi'], 70) }}
                 </p>
 
-                <div class="mt-5 flex justify-between items-center">
-
+                <div class="mt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <div>
-
-                        <h3 class="text-green-700 font-bold text-xl">
-
+                        <h3 class="text-green-700 font-bold text-lg sm:text-xl">
                             {{ $product['harga'] }}
-
                         </h3>
-
-                        <small class="text-gray-400">
-
-                            Stok tersedia
-
-                        </small>
-
+                        <small class="text-gray-400 block mt-0.5">Stok tersedia</small>
                     </div>
 
-                    <a
-                        href="{{ route('produk.show',$product['slug']) }}"
-                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl transition">
-
+                    <a href="{{ route('produk.show', $product['slug']) }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 sm:py-2.5 rounded-xl transition w-full sm:w-auto text-center font-semibold text-sm">
                         Detail
-
                     </a>
-
                 </div>
 
             </div>
 
         </div>
-
         @endforeach
 
     </div>

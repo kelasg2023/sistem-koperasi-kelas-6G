@@ -50,9 +50,101 @@
     </a>
     
     {{-- Icon Notifikasi --}}
-    <div class="w-9 h-9 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-500 relative hover:bg-gray-50 cursor-pointer transition-colors shrink-0">
-        <i class="fa-regular fa-bell"></i>
-        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+    <div x-data="{ 
+        open: false, 
+        notifs: [], 
+        unreadCount: 0,
+        loading: false, 
+        init() { 
+            if(window.userId) {
+                this.fetchNotifications(); 
+            }
+        }, 
+        async fetchNotifications() { 
+            this.loading = true; 
+            try { 
+                const res = await fetch('/api-proxy/notifications', { headers: {'Accept': 'application/json'} }); 
+                const data = await res.json(); 
+                if(data.success && data.data) { 
+                    this.notifs = data.data.notifications; 
+                    this.unreadCount = data.data.unread_count;
+                } 
+            } catch(e) { console.error('Gagal mengambil notifikasi'); } 
+            this.loading = false; 
+        },
+        async markAsRead() {
+            if(this.unreadCount === 0) return;
+            try {
+                const res = await fetch('/api-proxy/notifications/read', { 
+                    method: 'POST', 
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                    } 
+                });
+                if(res.ok) {
+                    this.unreadCount = 0;
+                    this.notifs.forEach(n => n.read_at = new Date().toISOString());
+                }
+            } catch(e) {}
+        }
+    }" 
+    @new-notification.window="
+        let notif = $event.detail;
+        notif.created_at = new Date().toISOString();
+        notifs.unshift(notif);
+        unreadCount++;
+    "
+    class="relative shrink-0">
+        <div @click="open = !open; if(open) markAsRead();" @click.outside="open = false" class="w-9 h-9 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-500 relative hover:bg-gray-50 cursor-pointer transition-colors shrink-0">
+            <i class="fa-regular fa-bell"></i>
+            <span x-show="unreadCount > 0" x-cloak class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white" x-text="unreadCount > 9 ? '9+' : unreadCount"></span>
+        </div>
+
+        {{-- Dropdown Notifikasi --}}
+        <div x-show="open" x-cloak x-transition.opacity.duration.200ms class="absolute right-0 mt-2 w-72 bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                <span class="text-sm font-bold text-gray-800">Notifikasi</span>
+            </div>
+            <div class="max-h-72 overflow-y-auto">
+                <template x-if="loading">
+                    <div class="px-4 py-6 text-center text-xs text-gray-400">
+                        <i class="fa-solid fa-spinner fa-spin mr-2"></i> Memuat...
+                    </div>
+                </template>
+                <template x-if="!loading && notifs.length === 0">
+                    <div class="px-4 py-8 text-center flex flex-col items-center justify-center text-gray-400">
+                        <i class="fa-regular fa-bell-slash text-2xl mb-2 opacity-50"></i>
+                        <span class="text-xs">Belum ada notifikasi.</span>
+                    </div>
+                </template>
+                <template x-if="!loading && notifs.length > 0">
+                    <div class="divide-y divide-gray-50">
+                        <template x-for="notif in notifs" :key="notif.id || Math.random()">
+                            <div class="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors" :class="{'bg-blue-50/30': !notif.read_at}">
+                                <div class="flex items-start gap-2">
+                                    <div class="mt-0.5 text-blue-500" x-show="notif.type === 'info' || !notif.type"><i class="fa-solid fa-circle-info"></i></div>
+                                    <div class="mt-0.5 text-red-500" x-show="notif.type === 'alert'"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                                    <div class="mt-0.5 text-green-500" x-show="notif.type === 'success'"><i class="fa-solid fa-circle-check"></i></div>
+                                    <div class="flex-1">
+                                        <div class="text-[12.5px] font-semibold text-gray-800 leading-snug" x-text="notif.title || notif.data?.title"></div>
+                                        <div class="text-[11px] text-gray-600 mt-0.5 leading-snug" x-text="notif.message || notif.data?.message"></div>
+                                        <div class="text-[9.5px] text-gray-400 mt-1.5" x-text="window.formatDateFromGMT ? window.formatDateFromGMT(notif.created_at) : notif.created_at"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+            
+            {{-- Tombol Lihat Semua --}}
+            <div class="border-t border-gray-100 bg-gray-50/50 p-2 text-center" x-show="!loading">
+                <a href="{{ route('notifications.index') }}" class="text-[12px] font-bold text-blue-600 hover:text-blue-800 transition-colors inline-block w-full py-1">
+                    Lihat Semua Notifikasi
+                </a>
+            </div>
+        </div>
     </div>
     
     {{-- Icon Bantuan --}}
@@ -89,9 +181,16 @@
                 <hr class="my-1 border-gray-100">
                 <form action="{{ route('logout') }}" method="POST" class="w-full">
                     @csrf
-                    <button type="submit" class="w-full text-left px-4 py-2.5 text-[13.5px] text-red-600 hover:bg-red-50 font-medium transition-colors">
-                        Keluar
-                    </button>
+                    <div class="px-2 pb-2">
+                        <!-- Tombol Pancing Notifikasi AI -->
+                        <button type="button" onclick="pancingNotifML()" class="w-full text-left px-4 py-2 text-sm font-medium text-orange-600 hover:bg-orange-50 rounded-xl transition-colors flex items-center mb-1">
+                            <i class="fa-solid fa-robot w-5"></i> Pancing Notif AI
+                        </button>
+
+                        <button type="submit" class="w-full text-left px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-colors flex items-center">
+                            <i class="fa-solid fa-arrow-right-from-bracket w-5"></i> Keluar
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -154,6 +253,36 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+function pancingNotifML() {
+    Swal.fire({
+        title: 'Memancing Notif...',
+        text: 'Mengirim request ke ML...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    fetch('/api-proxy/test-ml-notif', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+        }
+    }).then(res => res.json())
+    .then(data => {
+        Swal.close();
+        if(data.success) {
+            Swal.fire('Berhasil', data.message, 'success');
+        } else {
+            Swal.fire('Gagal', data.message || 'Terjadi kesalahan saat memancing', 'error');
+        }
+    }).catch(err => {
+        Swal.close();
+        Swal.fire('Error', 'Gagal memancing notif!', 'error');
+    });
+}
 </script>
 
 </div>

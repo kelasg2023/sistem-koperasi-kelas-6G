@@ -17,9 +17,9 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
-        host: '127.0.0.1',
+        host: '192.168.1.3',
         hmr: {
-            host: '127.0.0.1',
+            host: '192.168.1.3',
         },
         watch: {
             ignored: ['**/storage/framework/views/**'],

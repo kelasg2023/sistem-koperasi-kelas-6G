@@ -48,7 +48,7 @@
                     <template x-for="item in cartItems" :key="item.id">
                         <div class="flex items-start gap-4 py-4 border-b border-gray-50 last:border-0">
                             <input type="checkbox" x-model="item.selected" @change="updateSelection" class="w-5 h-5 rounded border-gray-300 text-[#2D7A42] focus:ring-[#2D7A42] mt-2 cursor-pointer">
-                            <img :src="item.image || 'https://placehold.co/100x100/e2e8f0/475569?text=Produk'" class="w-20 h-20 rounded-xl object-cover border border-gray-100">
+                            <img :src="item.image || 'https://picsum.photos/seed/' + item.id + '/100/100'" class="w-20 h-20 rounded-xl object-cover border border-gray-100">
                             <div class="flex-1">
                                 <h3 class="text-base font-bold text-gray-800" x-text="item.name"></h3>
                                 <p class="text-sm text-gray-500 mb-2" x-text="item.category || 'Kategori'"></p>

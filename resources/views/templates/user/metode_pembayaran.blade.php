@@ -89,7 +89,7 @@
                 async processTopUp(amount) {
                     this.isToppingUp = true;
                     try {
-                        const idempotencyKey = crypto.randomUUID();
+                        const idempotencyKey = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8); return v.toString(16); });
                         const res = await fetch('/api-proxy/wallet/topup', {
                             method: 'POST',
                             headers: {

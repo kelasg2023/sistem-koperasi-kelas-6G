@@ -60,4 +60,18 @@ class ApiProxyController extends Controller
             ], 500);
         }
     }
+
+    // ==========================================
+    // NOTIFICATIONS
+    // ==========================================
+    public function getNotifications(Request $request)
+    {
+        return $this->forwardRequest($request, 'get', '/notifications');
+    }
+
+    public function markNotificationAsRead(Request $request, $id = null)
+    {
+        $path = $id ? "/notifications/read/{$id}" : "/notifications/read";
+        return $this->forwardRequest($request, 'post', $path);
+    }
 }

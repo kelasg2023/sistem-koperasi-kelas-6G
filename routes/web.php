@@ -91,6 +91,35 @@ Route::middleware(EnsureAuthenticated::class)->group(function () {
     | Role-Specific Routes (checked via CheckRole alias 'role:...')
     |--------------------------------------------------------------------------
     */
+    // ==========================================
+    // NOTIFICATIONS PROXY
+    // ==========================================
+    // (Route /api-proxy/notifications di-handle otomatis oleh catch-all di bawah)
+    Route::get('/notifications', function () {
+        return view('notifications.index');
+    })->name('notifications.index');
+    
+    // Broadcast Auth Proxy
+    Route::post('/broadcasting/auth', function (Illuminate\Http\Request $request) {
+        $client = new \GuzzleHttp\Client();
+        try {
+            $baseUrl = str_replace('/api', '', env('API_BASE_URL', 'http://127.0.0.1:8000'));
+            $response = $client->post($baseUrl . '/api/broadcasting/auth', [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Bearer ' . $request->cookie('api_token'),
+                ],
+                'form_params' => [
+                    'socket_id' => $request->socket_id,
+                    'channel_name' => $request->channel_name
+                ]
+            ]);
+            return response($response->getBody(), $response->getStatusCode())->header('Content-Type', 'application/json');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Broadcast Proxy Error: " . $e->getMessage());
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+    });
     
     // Admin Routes
     Route::prefix('admin')->middleware('role:admin')->group(function () {
@@ -98,6 +127,8 @@ Route::middleware(EnsureAuthenticated::class)->group(function () {
         Route::get('/kategori/create', fn() => view('admin.kategori.create'))->name('admin.kategori.create');
         Route::get('/kategori/{id}/edit', fn($id) => view('admin.kategori.edit', ['id' => $id]))->name('admin.kategori.edit');
         Route::get('/produk', fn() => view('templates.admin.kelola_produk'))->name('admin.produk.index');
+        Route::get('/users', fn() => view('templates.admin.kelola_user'))->name('admin.users.index');
+        Route::get('/voucher', fn() => view('templates.admin.voucher'))->name('admin.voucher.index');
     });
 
     // Staff Routes
@@ -108,11 +139,13 @@ Route::middleware(EnsureAuthenticated::class)->group(function () {
     // Manager Routes
     Route::prefix('manager')->middleware('role:manager')->group(function () {
         Route::get('/dashboard', fn() => view('templates.manager.dashboard_manager'))->name('manager.dashboard');
+        Route::get('/voucher', fn() => view('templates.admin.voucher'))->name('manager.voucher.index');
     });
 
     // Supplier Routes
     Route::prefix('supplier')->middleware('role:supplier')->group(function () {
         Route::get('/dashboard', fn() => view('templates.supplier.dashboard_supplier'))->name('supplier.dashboard');
+        Route::get('/produk', fn() => view('templates.supplier.kelola_produk'))->name('supplier.produk.index');
     });
 });
 

@@ -127,7 +127,7 @@
 
                             <!-- Gambar Produk -->
                             <div class="aspect-square bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center mb-3">
-                                <img src="https://placehold.co/300x300/e2e8f0/475569?text={{ urlencode($product['nama']) }}" alt="{{ $product['nama'] }}" class="object-cover w-full h-full">
+                                <img src="https://picsum.photos/seed/{{ md5($product['nama']) }}/300/300" alt="{{ $product['nama'] }}" class="object-cover w-full h-full">
                             </div>
 
                             <!-- Detail Deskripsi Produk -->

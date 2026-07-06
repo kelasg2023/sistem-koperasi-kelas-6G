@@ -68,17 +68,23 @@ window.Echo = new Echo({
     enabledTransports: ['ws', 'wss'],
 });
 
-// Dengarkan notifikasi global dari Backend
-window.Echo.channel('tugas-channel').listen('DataUpdated', (e) => {
-    if (window.Swal) {
-        window.Swal.fire({
-            toast: true, 
-            position: 'top-end', 
-            icon: 'info',
-            title: 'Notifikasi Baru', 
-            text: typeof e.payload === 'string' ? e.payload : JSON.stringify(e.payload),
-            showConfirmButton: false, 
-            timer: 3000
+// Dengarkan notifikasi secara personal jika user login
+if (window.userId) {
+    window.Echo.private('App.Models.User.' + window.userId)
+        .listen('Illuminate\\Notifications\\Events\\BroadcastNotificationCreated', (e) => {
+            // Dispatch event untuk ditangkap oleh AlpineJS di navbar
+            window.dispatchEvent(new CustomEvent('new-notification', { detail: e }));
+            
+            if (window.Swal) {
+                window.Swal.fire({
+                    toast: true, 
+                    position: 'top-end', 
+                    icon: 'info',
+                    title: e.title || 'Notifikasi Baru', 
+                    text: e.message || 'Anda memiliki notifikasi baru.',
+                    showConfirmButton: false, 
+                    timer: 5000
+                });
+            }
         });
-    }
-});
+}

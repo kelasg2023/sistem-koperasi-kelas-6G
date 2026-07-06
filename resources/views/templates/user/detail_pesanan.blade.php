@@ -33,11 +33,11 @@
                 <i class="fa-solid fa-truck-fast text-2xl"></i>
             </div>
             <div>
-                <h2 class="text-lg font-bold mb-1 uppercase" x-text="'Status: ' + transaction.status"></h2>
+                <h2 class="text-lg font-bold mb-1 uppercase" x-text="'Status: ' + (transaction?.status || '')"></h2>
                 <p class="text-xs sm:text-sm text-green-100">
-                    <span x-show="transaction.status === 'proses'">Pesanan Anda sedang diproses dan akan segera dikirim.</span>
-                    <span x-show="transaction.status === 'berhasil' || transaction.status === 'selesai'">Pesanan telah selesai. Terima kasih telah berbelanja!</span>
-                    <span x-show="transaction.status !== 'proses' && transaction.status !== 'berhasil' && transaction.status !== 'selesai'">Pesanan saat ini dalam status <span x-text="transaction.status"></span>.</span>
+                    <span x-show="transaction?.status === 'proses'">Pesanan Anda sedang diproses dan akan segera dikirim.</span>
+                    <span x-show="transaction?.status === 'berhasil' || transaction?.status === 'selesai'">Pesanan telah selesai. Terima kasih telah berbelanja!</span>
+                    <span x-show="transaction?.status !== 'proses' && transaction?.status !== 'berhasil' && transaction?.status !== 'selesai'">Pesanan saat ini dalam status <span x-text="transaction?.status"></span>.</span>
                 </p>
             </div>
         </div>
@@ -65,16 +65,37 @@
             {{-- Kiri: Detail Produk & Pengiriman --}}
             <div class="md:col-span-2 space-y-6">
                 
-                {{-- Alamat Pengiriman --}}
+                {{-- Info Pengiriman --}}
                 <div class="bg-white border border-gray-100 rounded-2xl shadow-sm p-5 sm:p-6">
-                    <h3 class="text-base font-bold text-gray-900 mb-4 border-b border-gray-50 pb-4">Alamat Pengiriman</h3>
-                    <div class="flex gap-4">
-                        <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-location-dot"></i>
+                    <h3 class="text-base font-bold text-gray-900 mb-4 border-b border-gray-50 pb-4">Informasi Pengiriman</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs text-gray-400 font-medium">Alamat Penerima</h4>
+                                <h4 class="text-sm font-bold text-gray-800" x-text="userProfile?.name || 'Customer'"></h4>
+                                <p class="text-xs sm:text-sm text-gray-500 mt-1.5 leading-relaxed" x-text="transaction?.alamat_pengiriman || 'Alamat tidak tersedia.'"></p>
+                            </div>
                         </div>
-                        <div>
-                            <h4 class="text-sm font-bold text-gray-800" x-text="userProfile?.name || 'Customer'"></h4>
-                            <p class="text-xs sm:text-sm text-gray-500 mt-1.5 leading-relaxed" x-text="transaction.alamat_pengiriman || 'Alamat tidak tersedia.'"></p>
+
+                        <div class="flex gap-4 sm:border-l sm:border-gray-100 sm:pl-4">
+                            <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-truck"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs text-gray-400 font-medium">Jasa Pengiriman</h4>
+                                <p class="text-sm font-bold text-gray-800 uppercase" x-text="transaction?.jasa_kurir || '-'"></p>
+                                <h4 class="text-xs text-gray-400 font-medium mt-3">Nomor Resi</h4>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <p class="text-sm font-bold text-[#2D7A42]" x-text="transaction?.nomor_resi || 'Belum ada resi'"></p>
+                                    <button x-show="transaction?.nomor_resi" class="text-gray-400 hover:text-gray-600 text-xs" @click="navigator.clipboard.writeText(transaction?.nomor_resi); alert('Resi disalin!')">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -84,7 +105,7 @@
                     <h3 class="text-base font-bold text-gray-900 mb-4 border-b border-gray-50 pb-4">Daftar Produk</h3>
                     
                     <div class="space-y-4">
-                        <template x-for="item in transaction.details" :key="item.detail_id">
+                        <template x-for="item in (transaction?.transaction_details || [])" :key="item.detail_id">
                             <div class="flex gap-4">
                                 <div class="w-16 h-16 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center text-2xl shrink-0">
                                     <i class="fa-solid fa-box text-gray-400 text-lg"></i>
@@ -98,7 +119,7 @@
                                 </div>
                             </div>
                         </template>
-                        <div x-show="!transaction.details || transaction.details.length === 0" class="text-sm text-gray-500">
+                        <div x-show="!transaction?.transaction_details || transaction?.transaction_details.length === 0" class="text-sm text-gray-500">
                             Tidak ada detail produk untuk pesanan ini.
                         </div>
                     </div>
@@ -114,7 +135,7 @@
                     <div class="space-y-3 mb-5">
                         <div class="flex justify-between items-center text-xs sm:text-sm">
                             <span class="text-gray-500">Metode Pembayaran</span>
-                            <span class="font-bold text-gray-800 uppercase" x-text="transaction.payment_method"></span>
+                            <span class="font-bold text-gray-800 uppercase" x-text="transaction?.payment_method || ''"></span>
                         </div>
                         <div class="flex justify-between items-center text-xs sm:text-sm">
                             <span class="text-gray-500">Subtotal Produk</span>
@@ -129,7 +150,7 @@
                     <div class="pt-4 border-t border-dashed border-gray-200 mb-6">
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-gray-900 text-sm">Total Belanja</span>
-                            <span class="font-extrabold text-xl text-[#2D7A42]" x-text="formatRupiah(transaction.total_harga)"></span>
+                            <span class="font-extrabold text-xl text-[#2D7A42]" x-text="formatRupiah(transaction?.total_harga || 0)"></span>
                         </div>
                     </div>
 
@@ -186,9 +207,9 @@ document.addEventListener('alpine:init', () => {
             try {
                 const res = await fetch(`/api-proxy/transaction/${this.trxId}/track`);
                 const json = await res.json();
-                if (json.success && json.data) {
+                if (json.success && json.data && json.data.timeline) {
                     // Sorting desc biar yang terbaru di atas
-                    this.tracking = json.data.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+                    this.tracking = json.data.timeline.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
                 }
             } catch (e) {
                 console.error("Gagal mengambil tracking", e);
@@ -208,8 +229,8 @@ document.addEventListener('alpine:init', () => {
         },
 
         calculateSubtotal() {
-            if (!this.transaction || !this.transaction.details) return 0;
-            return this.transaction.details.reduce((sum, item) => sum + (parseFloat(item.harga_satuan) * item.jumlah), 0);
+            if (!this.transaction || !this.transaction.transaction_details) return 0;
+            return this.transaction.transaction_details.reduce((sum, item) => sum + (parseFloat(item.harga_satuan) * item.jumlah), 0);
         },
 
         calculateDiscount() {

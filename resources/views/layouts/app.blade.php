@@ -23,13 +23,14 @@
 <body class="font-['Plus_Jakarta_Sans'] bg-[#F6F8F6] text-[#1A1A1A] flex min-h-screen overflow-x-hidden antialiased">
 
     {{-- Sidebar Overlay untuk Mobile (satu-satunya, dikelola di sini) --}}
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-[90] hidden lg:hidden transition-opacity" onclick="toggleSidebar(false)"></div>
-
-    {{-- SIDEBAR --}}
-    @include('templates.sidebar')
+    @if(!View::hasSection('no-sidebar'))
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-[90] hidden lg:hidden transition-opacity" onclick="toggleSidebar(false)"></div>
+        {{-- SIDEBAR --}}
+        @include('templates.sidebar')
+    @endif
 
     {{-- MAIN CONTENT WRAPPER --}}
-    <div class="flex-1 flex flex-col min-h-screen w-full lg:ml-[220px] transition-all duration-300">
+    <div class="flex-1 flex flex-col min-h-screen w-full {{ !View::hasSection('no-sidebar') ? 'lg:ml-[220px]' : '' }} transition-all duration-300">
 
         {{-- TOPBAR --}}
         <header class="sticky top-0 z-50 bg-white border-b border-gray-200 h-16 px-4 lg:px-7 flex items-center gap-4">
@@ -74,6 +75,47 @@
                 document.body.classList.remove('overflow-hidden');
             }
         });
+
+        // ==========================================
+        // Set User ID for Broadcasting
+        // ==========================================
+        @if(session()->has('user'))
+            window.userId = {{ session('user.id_users') ?? 'null' }};
+        @endif
+
+        // ==========================================
+        // Trait/Helper Frontend (Global Function)
+        // Konversi Waktu dari GMT (UTC) ke Local Time
+        // ==========================================
+        window.formatDateFromGMT = function(dateString) {
+            if (!dateString) return '-';
+            
+            // Tambahkan 'Z' agar Javascript mendeteksi sebagai UTC (GMT)
+            // Jika backend (Laravel) mengembalikan "2026-07-06 10:00:00" tanpa Z
+            let utcString = dateString;
+            if (!utcString.endsWith('Z') && !utcString.includes('+')) {
+                utcString = utcString.replace(' ', 'T') + 'Z';
+            }
+            
+            const date = new Date(utcString);
+            
+            // Konversi ke format lokal (contoh: Waktu Indonesia)
+            let formatted = date.toLocaleDateString('id-ID', {
+                day: 'numeric', 
+                month: 'short', 
+                year: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit',
+                timeZoneName: 'shortOffset'
+            });
+            
+            // Ganti offset standar dengan singkatan zona waktu Indonesia
+            formatted = formatted.replace('GMT+7', 'WIB')
+                                 .replace('GMT+8', 'WITA')
+                                 .replace('GMT+9', 'WIT');
+                                 
+            return formatted;
+        };
     </script>
     @stack('scripts')
 </body>

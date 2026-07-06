@@ -87,15 +87,31 @@
                     <h2 class="text-lg font-bold text-gray-900">Ringkasan Pesanan</h2>
                 </div>
                 
-                <div class="p-5 max-h-[300px] overflow-y-auto space-y-4">
-                    <template x-for="item in items" :key="item.id">
-                        <div class="flex items-start gap-3">
-                            <img :src="item.image || 'https://placehold.co/100x100/e2e8f0/475569?text=Produk'" class="w-12 h-12 rounded-lg object-cover border border-gray-100 shrink-0">
-                            <div class="flex-1">
-                                <h4 class="text-sm font-bold text-gray-800 line-clamp-1" x-text="item.name"></h4>
-                                <p class="text-xs text-gray-500" x-text="item.qty + ' x ' + formatRupiah(item.price)"></p>
+                <div class="p-5 max-h-[400px] overflow-y-auto space-y-4">
+                    <template x-for="(item, index) in items" :key="item.id">
+                        <div class="border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                            <div class="flex items-start gap-3 mb-3">
+                                <img :src="item.image || 'https://picsum.photos/seed/' + item.id + '/100/100'" class="w-12 h-12 rounded-lg object-cover border border-gray-100 shrink-0">
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-bold text-gray-800 line-clamp-1" x-text="item.name"></h4>
+                                    <p class="text-xs text-gray-500" x-text="item.qty + ' x ' + formatRupiah(item.price)"></p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-sm font-extrabold text-[#2D7A42] block" x-text="formatRupiah(item.qty * item.price)"></span>
+                                    <span x-show="item.voucher" class="text-xs text-red-500 font-bold block" x-text="'- ' + item.voucher.potongan_persen + '%'"></span>
+                                </div>
                             </div>
-                            <span class="text-sm font-extrabold text-[#2D7A42] shrink-0" x-text="formatRupiah(item.qty * item.price)"></span>
+                            
+                            <!-- Tombol Pilih Voucher -->
+                            <div class="flex justify-between items-center bg-green-50/50 p-2 rounded-lg border border-green-100">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-ticket text-[#2D7A42]"></i>
+                                    <span class="text-xs font-semibold" x-text="item.voucher ? 'Voucher Terpakai: ' + item.voucher.kode_voucher : 'Gunakan Voucher'"></span>
+                                </div>
+                                <button type="button" @click.prevent.stop="openVoucherModal(index)" class="text-xs font-bold text-[#2D7A42] hover:text-[#1E5C2F] bg-white px-3 py-1 rounded border border-[#2D7A42] transition-colors">
+                                    <span x-text="item.voucher ? 'Ganti' : 'Pilih'"></span>
+                                </button>
+                            </div>
                         </div>
                     </template>
                 </div>
@@ -103,7 +119,11 @@
                 <div class="p-5 border-t border-gray-100 bg-gray-50">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-sm text-gray-600">Total Harga</span>
-                        <span class="text-sm font-semibold text-gray-800" x-text="formatRupiah(totalPrice)"></span>
+                        <span class="text-sm font-semibold text-gray-800" x-text="formatRupiah(totalOriginalPrice)"></span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-600">Total Diskon</span>
+                        <span class="text-sm font-semibold text-red-500" x-text="'- ' + formatRupiah(totalDiscount)"></span>
                     </div>
                     <div class="flex justify-between items-center mb-4">
                         <span class="text-sm text-gray-600">Ongkos Kirim</span>
@@ -128,6 +148,65 @@
         </div>
 
     </div>
+
+    <!-- Modal Voucher -->
+    <div x-show="isVoucherModalOpen" style="display: none;" class="fixed inset-0 z-[9999] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div x-show="isVoucherModalOpen" x-transition.opacity class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" aria-hidden="true" @click="isVoucherModalOpen = false"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div x-show="isVoucherModalOpen" 
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                 class="relative z-10 inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md w-full">
+                
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-gray-900" id="modal-title">Pilih Voucher</h3>
+                        <button @click="isVoucherModalOpen = false" class="text-gray-400 hover:text-gray-500">
+                            <i class="fa-solid fa-xmark text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Form Input Kode Manual -->
+                    <div class="flex gap-2 mb-6 border-b border-gray-100 pb-4">
+                        <input type="text" x-model="manualVoucherCode" placeholder="Masukkan kode voucher..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2D7A42]/50 text-sm uppercase">
+                        <button type="button" @click="applyManualVoucher()" class="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-700 transition-colors" :disabled="isCheckingVoucher">
+                            <i x-show="isCheckingVoucher" class="fa-solid fa-spinner fa-spin mr-1"></i> Terapkan
+                        </button>
+                    </div>
+
+                    <!-- List Voucher Tersedia -->
+                    <div class="space-y-3 max-h-64 overflow-y-auto pr-1">
+                        <p x-show="availableVouchers.length === 0" class="text-sm text-gray-500 text-center py-4">Tidak ada voucher tersedia untuk produk ini.</p>
+                        
+                        <template x-for="v in availableVouchers" :key="v.id_voucher">
+                            <div class="border border-green-200 bg-green-50 rounded-xl p-3 flex justify-between items-center">
+                                <div>
+                                    <h4 class="font-bold text-[#2D7A42] text-sm" x-text="v.kode_voucher"></h4>
+                                    <p class="text-xs text-gray-600 mt-1" x-text="'Diskon ' + parseFloat(v.potongan_persen) + '%'"></p>
+                                    <p class="text-[10px] text-gray-500 mt-1" x-text="'Sisa kuota: ' + v.kuota"></p>
+                                </div>
+                                <div>
+                                    <!-- Jika claim, cek apakah sudah diclaim -->
+                                    <template x-if="v.tipe_voucher === 'claim' && !isClaimed(v)">
+                                        <button type="button" @click="claimVoucher(v)" class="bg-[#2D7A42] text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-[#1E5C2F] transition-colors" :disabled="isClaiming">
+                                            Klaim
+                                        </button>
+                                    </template>
+                                    <template x-if="v.tipe_voucher === 'langsung' || (v.tipe_voucher === 'claim' && isClaimed(v))">
+                                        <button type="button" @click="selectVoucher(v)" class="border border-[#2D7A42] text-[#2D7A42] px-3 py-1.5 rounded text-xs font-bold hover:bg-[#2D7A42] hover:text-white transition-colors">
+                                            Gunakan
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @push('scripts')
@@ -135,9 +214,15 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('checkoutPage', () => ({
         items: [],
+        vouchers: [], // Semua voucher dari server
         walletBalance: 0,
         isLoadingWallet: true,
         isLoading: false,
+        isVoucherModalOpen: false,
+        activeItemIndex: null,
+        manualVoucherCode: '',
+        isCheckingVoucher: false,
+        isClaiming: false,
         form: {
             alamat_pengiriman: '',
             jasa_kurir: '',
@@ -149,7 +234,7 @@ document.addEventListener('alpine:init', () => {
             const stored = localStorage.getItem('checkout_items');
             if (stored) {
                 try {
-                    this.items = JSON.parse(stored);
+                    this.items = JSON.parse(stored).map(item => ({...item, voucher: null}));
                 } catch (e) {
                     this.items = [];
                 }
@@ -162,6 +247,21 @@ document.addEventListener('alpine:init', () => {
             }
 
             this.loadWallet();
+            this.loadVouchers();
+        },
+
+        async loadVouchers() {
+            try {
+                const res = await fetch('/api-proxy/voucher', {
+                    headers: { 'Accept': 'application/json' }
+                });
+                const json = await res.json();
+                if (json.success) {
+                    this.vouchers = json.data;
+                }
+            } catch (e) {
+                console.error('Failed to load vouchers', e);
+            }
         },
 
         async loadWallet() {
@@ -178,8 +278,92 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
-        get totalPrice() {
+        get totalOriginalPrice() {
             return this.items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        },
+
+        get totalDiscount() {
+            return this.items.reduce((sum, item) => {
+                if (item.voucher) {
+                    const subtotal = item.price * item.qty;
+                    return sum + (subtotal * (parseFloat(item.voucher.potongan_persen) / 100));
+                }
+                return sum;
+            }, 0);
+        },
+
+        get totalPrice() {
+            return this.totalOriginalPrice - this.totalDiscount;
+        },
+
+        get availableVouchers() {
+            if (this.activeItemIndex === null) return [];
+            const activeItem = this.items[this.activeItemIndex];
+            return this.vouchers.filter(v => 
+                (v.barang_id === activeItem.id || v.barang_id === null) && 
+                new Date(v.expired_at) > new Date() && 
+                v.kuota > 0
+            );
+        },
+
+        isClaimed(voucher) {
+            return voucher.claims && voucher.claims.some(c => c.status === 'claimed');
+        },
+
+        openVoucherModal(index) {
+            this.activeItemIndex = index;
+            this.manualVoucherCode = '';
+            this.isVoucherModalOpen = true;
+        },
+
+        selectVoucher(voucher) {
+            if (this.activeItemIndex !== null) {
+                this.items[this.activeItemIndex].voucher = voucher;
+            }
+            this.isVoucherModalOpen = false;
+        },
+
+        async claimVoucher(voucher) {
+            this.isClaiming = true;
+            try {
+                const res = await fetch('/api-proxy/voucher/claim', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({ kode_voucher: voucher.kode_voucher })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    Swal.fire('Berhasil', 'Voucher berhasil diklaim!', 'success');
+                    // Reload vouchers to update claim status
+                    await this.loadVouchers();
+                } else {
+                    Swal.fire('Gagal', data.message || 'Gagal klaim voucher', 'error');
+                }
+            } catch (e) {
+                Swal.fire('Error', 'Terjadi kesalahan jaringan', 'error');
+            } finally {
+                this.isClaiming = false;
+            }
+        },
+
+        applyManualVoucher() {
+            const code = this.manualVoucherCode.trim().toUpperCase();
+            if (!code) return;
+
+            const voucher = this.availableVouchers.find(v => v.kode_voucher.toUpperCase() === code);
+            if (voucher) {
+                if (voucher.tipe_voucher === 'claim' && !this.isClaimed(voucher)) {
+                    Swal.fire('Oops', 'Voucher ini harus diklaim terlebih dahulu.', 'warning');
+                } else {
+                    this.selectVoucher(voucher);
+                }
+            } else {
+                Swal.fire('Tidak Valid', 'Voucher tidak ditemukan atau tidak berlaku untuk produk ini.', 'error');
+            }
         },
 
         get isFormValid() {
@@ -204,7 +388,8 @@ document.addEventListener('alpine:init', () => {
             // Format item sesuai payload backend
             const payloadItems = this.items.map(item => ({
                 barang_id: item.id,
-                jumlah: item.qty
+                jumlah: item.qty,
+                kode_voucher: item.voucher ? item.voucher.kode_voucher : null
             }));
 
             const payload = {
@@ -214,7 +399,7 @@ document.addEventListener('alpine:init', () => {
                 items: payloadItems
             };
 
-            const idempotencyKey = crypto.randomUUID();
+            const idempotencyKey = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8); return v.toString(16); });
 
             try {
                 const res = await fetch('/api-proxy/transaction/checkout', {

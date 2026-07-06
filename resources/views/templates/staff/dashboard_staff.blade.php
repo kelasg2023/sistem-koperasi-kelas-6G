@@ -92,51 +92,52 @@
                             <td class="p-4 font-medium text-gray-900" x-text="'Rp ' + new Intl.NumberFormat('id-ID').format(trx.total_harga)"></td>
                             <td class="p-4">
                                 <div class="flex flex-col gap-1">
-                                    <span class="px-3 py-1 rounded-full text-[10px] font-bold capitalize w-fit"
+                                    <span class="px-2 py-1 text-[10px] font-bold rounded-md capitalize"
                                           :class="{
-                                              'bg-yellow-100 text-yellow-700': trx.status === 'pending' || trx.status === 'proses',
-                                              'bg-green-100 text-green-700': trx.status === 'berhasil',
-                                              'bg-red-100 text-red-700': trx.status === 'gagal' || trx.status === 'refund',
-                                          }" x-text="'Pembayaran: ' + trx.status"></span>
-                                    
-                                    <span class="px-3 py-1 rounded-full text-[10px] font-bold w-fit uppercase tracking-wider"
+                                              'bg-yellow-100 text-yellow-700': trx.payment_status === 'pending',
+                                              'bg-green-100 text-green-700': trx.payment_status === 'success',
+                                              'bg-red-100 text-red-700': trx.payment_status === 'failed' || trx.payment_status === 'expire' || trx.payment_status === 'deny' || trx.payment_status === 'cancel'
+                                          }" x-text="trx.payment_status"></span>
+                                </div>
+                                <div class="mt-2 flex items-center gap-1.5">
+                                    <span class="px-2 py-1 text-[10px] font-bold rounded-md capitalize flex items-center gap-1"
                                           :class="{
-                                              'bg-gray-100 text-gray-600': trx.status_pengiriman === 'pending',
+                                              'bg-orange-100 text-orange-700': trx.status_pengiriman === 'diproses',
                                               'bg-blue-100 text-blue-700': trx.status_pengiriman === 'dikemas',
                                               'bg-indigo-100 text-indigo-700': trx.status_pengiriman === 'dikirim',
-                                              'bg-[#e2f0e5] text-[#2D7A42]': trx.status_pengiriman === 'selesai'
+                                              'bg-green-100 text-green-700': trx.status_pengiriman === 'selesai'
                                           }">
-                                        <i class="fa-solid mr-1" :class="{
-                                            'fa-clock': trx.status_pengiriman === 'pending',
+                                        <i class="fa-solid" :class="{
+                                            'fa-clock': trx.status_pengiriman === 'diproses',
                                             'fa-box': trx.status_pengiriman === 'dikemas',
                                             'fa-truck': trx.status_pengiriman === 'dikirim',
-                                            'fa-check-circle': trx.status_pengiriman === 'selesai'
-                                        }"></i>
-                                        <span x-text="trx.status_pengiriman"></span>
+                                            'fa-check': trx.status_pengiriman === 'selesai'
+                                        }"></i> <span x-text="trx.status_pengiriman"></span>
                                     </span>
                                 </div>
                             </td>
-                            <td class="p-4 text-right">
-                                <div x-show="trx.status === 'proses' || trx.status === 'pending'" class="flex justify-end gap-2">
-                                    <button x-show="trx.status_pengiriman === 'pending'" 
+                            <td class="p-4 align-top w-48">
+                                <div x-show="trx.payment_status === 'success' && trx.status_pengiriman !== 'selesai'" class="flex justify-end gap-2">
+                                    <button x-show="trx.status_pengiriman === 'diproses'" 
                                             @click="updateStatus(trx.transaction_id, 'dikemas', 'Pesanan sedang disiapkan dan dikemas.')" 
                                             class="px-3 py-1.5 text-[11px] font-bold text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition shadow-sm">
-                                        Kemasi
+                                        <i class="fa-solid fa-box mr-1"></i> Kemas
                                     </button>
-
                                     <button x-show="trx.status_pengiriman === 'dikemas'" 
-                                            @click="updateStatus(trx.transaction_id, 'dikirim', 'Pesanan sedang dalam perjalanan ke pembeli.')" 
+                                            @click="updateStatus(trx.transaction_id, 'dikirim', 'Pesanan sedang dalam perjalanan ke pembeli (Resi: ' + trx.nomor_resi + ').')" 
                                             class="px-3 py-1.5 text-[11px] font-bold text-white bg-indigo-500 rounded-lg hover:bg-indigo-600 transition shadow-sm">
-                                        Kirim
+                                        <i class="fa-solid fa-truck mr-1"></i> Kirim
                                     </button>
-
                                     <button x-show="trx.status_pengiriman === 'dikirim'" 
-                                            @click="updateStatus(trx.transaction_id, 'selesai', 'Pesanan telah diterima oleh pembeli.')" 
-                                            class="px-3 py-1.5 text-[11px] font-bold text-white bg-[#2D7A42] rounded-lg hover:bg-[#1E5C2F] transition shadow-sm">
-                                        Selesai
+                                            @click="updateStatus(trx.transaction_id, 'selesai', 'Pesanan telah sampai dan diselesaikan.')" 
+                                            class="px-3 py-1.5 text-[11px] font-bold text-white bg-green-500 rounded-lg hover:bg-green-600 transition shadow-sm">
+                                        <i class="fa-solid fa-check-double mr-1"></i> Selesai
                                     </button>
                                 </div>
-                                <span x-show="trx.status !== 'proses' && trx.status !== 'pending'" class="text-gray-400 text-xs italic">Transaksi Ditutup</span>
+                                <div x-show="trx.payment_status === 'pending'" class="text-gray-400 text-xs flex justify-end font-medium italic">
+                                    Menunggu Pembayaran
+                                </div>
+                                <span x-show="trx.status_pengiriman === 'selesai'" class="text-green-600 font-bold text-xs flex justify-end"><i class="fa-solid fa-check-double mr-1 mt-0.5"></i> Transaksi Selesai</span>
                             </td>
                         </tr>
                     </template>

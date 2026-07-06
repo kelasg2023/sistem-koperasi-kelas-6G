@@ -139,7 +139,7 @@
             </div>
 
             <div class="w-full lg:w-[45%] flex justify-center lg:justify-end z-10">
-               <img src="https://placehold.co/600x400/e2e8f0/1a622a?text=Gambar+Sembako" 
+                <img src="https://picsum.photos/seed/koperasi-sembako/600/400" 
      alt="Bahan Pokok Segar" 
      class="rounded-l-sm rounded-r-[24px] w-full h-[280px] lg:h-[340px] object-cover" />
             </div>
@@ -380,7 +380,7 @@
         
         <!-- Sisi Kanan: Ilustrasi Keluarga -->
         <div class="w-full lg:w-1/2 flex justify-center lg:justify-end relative z-10">
-            <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=600" 
+            <img src="https://picsum.photos/seed/koperasi-market/600/800" 
                  alt="Keluarga Koperasi 6G" 
                  class="w-full max-w-[450px] object-cover rounded-2xl h-64 md:h-80 shadow-inner" />
         </div>
@@ -475,7 +475,7 @@
                 <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 flex flex-col items-center justify-between text-center shadow transition hover:shadow-lg">
                     <div class="flex flex-col items-center w-full">
                         <div class="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden mb-4 bg-gray-50 shadow-inner flex items-center justify-center">
-                            <img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&q=80&w=150" 
+                            <img src="https://picsum.photos/seed/koperasi-1/150/150" 
                                  class="w-full h-full object-cover hover:scale-105 transition duration-300" 
                                  alt="Madu Murni Desa">
                         </div>
@@ -492,7 +492,7 @@
                 <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 flex flex-col items-center justify-between text-center shadow transition hover:shadow-lg">
                     <div class="flex flex-col items-center w-full">
                         <div class="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden mb-4 bg-gray-50 shadow-inner flex items-center justify-center">
-                            <img src="https://images.unsplash.com/photo-1621932953986-15fcf084da0f?auto=format&fit=crop&q=80&w=150" 
+                            <img src="https://picsum.photos/seed/koperasi-2/150/150" 
                                  class="w-full h-full object-cover hover:scale-105 transition duration-300" 
                                  alt="Gula Aren">
                         </div>
@@ -509,7 +509,7 @@
                 <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 flex flex-col items-center justify-between text-center shadow transition hover:shadow-lg">
                     <div class="flex flex-col items-center w-full">
                         <div class="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden mb-4 bg-gray-50 shadow-inner flex items-center justify-center">
-                            <img src="https://images.unsplash.com/photo-1607687311177-0100785c2e9a?auto=format&fit=crop&q=80&w=150" 
+                            <img src="https://picsum.photos/seed/koperasi-3/150/150" 
                                  class="w-full h-full object-cover hover:scale-105 transition duration-300" 
                                  alt="Kopi Robusta Lereng">
                         </div>
@@ -526,7 +526,7 @@
                 <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 flex flex-col items-center justify-between text-center shadow transition hover:shadow-lg">
                     <div class="flex flex-col items-center w-full">
                         <div class="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden mb-4 bg-gray-50 shadow-inner flex items-center justify-center">
-                            <img src="https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&q=80&w=150" 
+                            <img src="https://picsum.photos/seed/koperasi-4/150/150" 
                                  class="w-full h-full object-cover hover:scale-105 transition duration-300" 
                                  alt="Sambal Rumahan Bu Sri">
                         </div>
@@ -543,7 +543,7 @@
                 <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 flex flex-col items-center justify-between text-center shadow transition hover:shadow-lg col-span-2 sm:col-span-1">
                     <div class="flex flex-col items-center w-full">
                         <div class="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden mb-4 bg-gray-50 shadow-inner flex items-center justify-center">
-                            <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&q=80&w=150" 
+                            <img src="https://picsum.photos/seed/koperasi-5/150/150" 
                                  class="w-full h-full object-cover hover:scale-105 transition duration-300" 
                                  alt="Kerajinan Bambu Desa">
                         </div>
@@ -625,7 +625,7 @@
             <!-- Sisi Kanan: Peta (Mock Map Visual) -->
             <div class="lg:col-span-8 relative rounded-3xl overflow-hidden shadow-md border border-gray-100 dark:border-gray-800 h-[320px] md:h-[420px] w-full">
                 <!-- Gambar Latar Belakang Peta (Gunakan ilustrasi map atau map satelit ringan) -->
-                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=1000" 
+                <img src="https://picsum.photos/seed/koperasi-hero/1000/600" 
                      class="w-full h-full object-cover filter brightness-95 contrast-90 dark:opacity-80" 
                      alt="Peta Lokasi Toko">
                 
@@ -694,7 +694,7 @@
 
                     <!-- Profil Pengguna -->
                     <div class="flex items-center gap-3">
-                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100" 
+                        <img src="https://picsum.photos/seed/user-1/100/100" 
                              class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-700" 
                              alt="Ibu Lisa">
                         <div>
@@ -719,7 +719,7 @@
                     </p>
 
                     <div class="flex items-center gap-3">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" 
+                        <img src="https://picsum.photos/seed/user-2/100/100" 
                              class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-700" 
                              alt="Ibu Jennie">
                         <div>
@@ -744,7 +744,7 @@
                     </p>
 
                     <div class="flex items-center gap-3">
-                        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=100" 
+                        <img src="https://picsum.photos/seed/user-3/100/100" 
                              class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-700" 
                              alt="Ibu Jisoo">
                         <div>

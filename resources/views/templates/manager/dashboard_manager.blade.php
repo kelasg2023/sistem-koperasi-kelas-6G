@@ -118,7 +118,7 @@
                             <template x-for="sale in salesReports" :key="sale.transaction_id">
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-6 py-4 font-medium text-gray-900">#TRX-<span x-text="sale.transaction_id"></span></td>
-                                    <td class="px-6 py-4 text-gray-600" x-text="new Date(sale.created_at).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit'})"></td>
+                                    <td class="px-6 py-4 text-gray-600" x-text="window.formatDateFromGMT(sale.created_at)"></td>
                                     <td class="px-6 py-4 text-gray-600 font-medium" x-text="sale.user ? sale.user.username : 'Anonim'"></td>
                                     <td class="px-6 py-4">
                                         <ul class="list-disc list-inside text-gray-600 text-xs">

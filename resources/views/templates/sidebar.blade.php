@@ -28,6 +28,14 @@
             <i class="fa-solid fa-box-open w-[18px] text-center text-[15px]"></i> Kelola Produk
         </a>
 
+        <a href="/admin/users" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm mb-0.5 transition-colors {{ request()->is('admin/users*') ? 'bg-[#2D7A42] text-white font-semibold shadow-sm' : 'text-gray-500 font-medium hover:bg-[#E8F5EC] hover:text-[#2D7A42]' }}">
+            <i class="fa-solid fa-users w-[18px] text-center text-[15px]"></i> Kelola User
+        </a>
+
+        <a href="/admin/voucher" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm mb-0.5 transition-colors {{ request()->is('admin/voucher*') ? 'bg-[#2D7A42] text-white font-semibold shadow-sm' : 'text-gray-500 font-medium hover:bg-[#E8F5EC] hover:text-[#2D7A42]' }}">
+            <i class="fa-solid fa-ticket w-[18px] text-center text-[15px]"></i> Kelola Voucher
+        </a>
+
         <div class="flex-1"></div>
 
         <div class="mt-4 pt-4 border-t border-gray-100">
@@ -89,6 +97,10 @@
 
         <a href="{{ route('supplier.dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm mb-0.5 transition-colors {{ request()->routeIs('supplier.dashboard') ? 'bg-[#2D7A42] text-white font-semibold shadow-sm' : 'text-gray-500 font-medium hover:bg-[#E8F5EC] hover:text-[#2D7A42]' }}">
             <i class="fa-solid fa-truck w-[18px] text-center text-[15px]"></i> Pasokan Barang
+        </a>
+
+        <a href="{{ route('supplier.produk.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm mb-0.5 transition-colors {{ request()->routeIs('supplier.produk.index') ? 'bg-[#2D7A42] text-white font-semibold shadow-sm' : 'text-gray-500 font-medium hover:bg-[#E8F5EC] hover:text-[#2D7A42]' }}">
+            <i class="fa-solid fa-box-open w-[18px] text-center text-[15px]"></i> Kelola Produk
         </a>
 
         <div class="flex-1"></div>
