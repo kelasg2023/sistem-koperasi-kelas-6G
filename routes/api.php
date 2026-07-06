@@ -14,6 +14,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.email');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
+\Illuminate\Support\Facades\Broadcast::routes(['middleware' => ['auth:sanctum']]);
+
 // Webhook Midtrans
 Route::post('/wallet/webhook', [\App\Http\Controllers\WalletController::class, 'webhook']);
 
@@ -31,6 +33,22 @@ Route::middleware('auth:sanctum')->group(function () {
     // Endpoint profil user
     Route::get('/profile', [AuthController::class, 'getProfile']);
     Route::patch('/profile', [AuthController::class, 'updateProfile']);
+
+    // Endpoint Notifikasi
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [\App\Http\Controllers\NotificationController::class, 'index']);
+        Route::post('/read/{id?}', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
+    });
+    
+    // Endpoint Pancingan Notif (Testing)
+    Route::post('/test-ml-notif', function(Request $request) {
+        $request->user()->notify(new \App\Notifications\SystemNotification(
+            'Laporan Analisis Stok (AI)',
+            "Python ML mendeteksi ada 2 barang yang perlu perhatian Anda. Silakan cek laporan prediksi stok.",
+            'warning'
+        ));
+        return response()->json(['success' => true, 'message' => 'Notif Python (Simulasi) berhasil dipancing!']);
+    });
 
     // Endpoint khusus admin
     Route::middleware('role:admin')->prefix('admin')->group(function () {

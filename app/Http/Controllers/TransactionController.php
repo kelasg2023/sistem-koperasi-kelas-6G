@@ -26,7 +26,7 @@ class TransactionController extends Controller
         $validator = Validator::make($request->all(), [
             'alamat_pengiriman' => 'required|string',
             'jasa_kurir'        => 'required|string|max:50',
-            'payment_method'    => 'required|in:wallet', // Hanya menerima wallet
+            'payment_method'    => 'required|in:wallet,midtrans', // Mendukung wallet & midtrans
             'items'             => 'required|array|min:1',
             'items.*.barang_id' => 'required|exists:barang,barang_id',
             'items.*.jumlah'    => 'required|integer|min:1',
@@ -64,7 +64,10 @@ class TransactionController extends Controller
                 // Logika penerapan Voucher per barang
                 if (isset($item['kode_voucher'])) {
                     $voucher = Voucher::where('kode_voucher', $item['kode_voucher'])
-                        ->where('barang_id', $barang->barang_id)
+                        ->where(function ($query) use ($barang) {
+                            $query->where('barang_id', $barang->barang_id)
+                                  ->orWhereNull('barang_id');
+                        })
                         ->lockForUpdate()
                         ->first();
 
@@ -73,9 +76,33 @@ class TransactionController extends Controller
                         return $this->errorResponse("Voucher {$item['kode_voucher']} tidak valid untuk barang {$barang->nama}", 400);
                     }
 
-                    if (!$voucher->isUsableDirectly()) {
+                    if ($voucher->isExpired()) {
                         DB::rollBack();
-                        return $this->errorResponse("Voucher {$item['kode_voucher']} sudah expired atau kuota habis", 400);
+                        return $this->errorResponse("Voucher {$item['kode_voucher']} sudah expired", 400);
+                    }
+
+                    if (!$voucher->hasStock()) {
+                        DB::rollBack();
+                        return $this->errorResponse("Kuota voucher {$item['kode_voucher']} sudah habis", 400);
+                    }
+
+                    if ($voucher->tipe_voucher === 'claim') {
+                        // Harus sudah di-claim oleh user ini
+                        $claim = \App\Models\VoucherClaim::where('user_id', $user->id_users)
+                            ->where('id_voucher', $voucher->id_voucher)
+                            ->where('status', 'claimed')
+                            ->lockForUpdate()
+                            ->first();
+
+                        if (!$claim) {
+                            DB::rollBack();
+                            return $this->errorResponse("Anda belum mengklaim voucher {$item['kode_voucher']} atau sudah menggunakannya.", 400);
+                        }
+
+                        // Tandai sudah dipakai
+                        $claim->status = 'used';
+                        $claim->used_at = now();
+                        $claim->save();
                     }
 
                     // Terapkan diskon voucher
@@ -112,7 +139,8 @@ class TransactionController extends Controller
             $transaction->payment_method = $request->payment_method;
             $transaction->alamat_pengiriman = $request->alamat_pengiriman;
             $transaction->jasa_kurir = $request->jasa_kurir;
-            $transaction->status_pengiriman = 'pending';
+            $transaction->nomor_resi = 'RESI-' . strtoupper(\Illuminate\Support\Str::random(10));
+            $transaction->status_pengiriman = 'diproses';
             $transaction->save();
 
             // Insert Transaction Details
@@ -126,24 +154,56 @@ class TransactionController extends Controller
                 $transactionDetail->save();
             }
 
-            // Integrasi pemotongan Wallet (Wajib karena payment_method == 'wallet')
-            $wallet = \App\Models\Wallet::where('user_id', $user->id_users)->lockForUpdate()->first();
+            // Logika Pembayaran
+            if ($request->payment_method === 'wallet') {
+                // Integrasi pemotongan Wallet (Wajib karena payment_method == 'wallet')
+                $wallet = \App\Models\Wallet::where('user_id', $user->id_users)->lockForUpdate()->first();
 
-            if (!$wallet || $wallet->balance < $total_harga_keseluruhan) {
-                DB::rollBack();
-                return $this->errorResponse('Saldo wallet tidak mencukupi untuk transaksi ini', 400);
+                if (!$wallet || $wallet->balance < $total_harga_keseluruhan) {
+                    DB::rollBack();
+                    return $this->errorResponse('Saldo wallet tidak mencukupi untuk transaksi ini', 400);
+                }
+
+                // Potong saldo
+                $wallet->balance -= $total_harga_keseluruhan;
+                $wallet->save();
+
+                // Catat history
+                \App\Models\WalletHistory::create([
+                    'id_wallet' => $wallet->id_wallet,
+                    'balance_transaction' => $total_harga_keseluruhan,
+                    'wt_status_history' => 'terpakai',
+                ]);
+                
+                $transaction->payment_status = 'success';
+                $transaction->save();
+            } else if ($request->payment_method === 'midtrans') {
+                // Generate Snap Token for Midtrans
+                \Midtrans\Config::$serverKey = config('midtrans.server_key');
+                \Midtrans\Config::$isProduction = config('midtrans.is_production');
+                \Midtrans\Config::$isSanitized = config('midtrans.is_sanitized');
+                \Midtrans\Config::$is3ds = config('midtrans.is_3ds');
+
+                $orderId = 'TRX-' . $transaction->transaction_id . '-' . time();
+                
+                $params = [
+                    'transaction_details' => [
+                        'order_id' => $orderId,
+                        'gross_amount' => $total_harga_keseluruhan,
+                    ],
+                    'customer_details' => [
+                        'first_name' => $user->customer ? $user->customer->nama_lengkap : $user->username,
+                        'email' => $user->email,
+                    ]
+                ];
+
+                $snapToken = \Midtrans\Snap::getSnapToken($params);
+                
+                $transaction->midtrans_order_id = $orderId;
+                $transaction->snap_token = $snapToken;
+                $transaction->payment_status = 'pending';
+                $transaction->save();
             }
-
-            // Potong saldo
-            $wallet->balance -= $total_harga_keseluruhan;
-            $wallet->save();
-
-            // Catat history
-            \App\Models\WalletHistory::create([
-                'id_wallet' => $wallet->id_wallet,
-                'balance_transaction' => $total_harga_keseluruhan,
-                'wt_status_history' => 'terpakai',
-            ]);
 
             // Validasi member otomatis jika total transaksi >= 100.000
             if ($user->role === 'customer') {
@@ -179,7 +239,7 @@ class TransactionController extends Controller
             // Rekam jejak pertama (Timeline Tracking)
             \App\Models\TransactionTracking::create([
                 'transaction_id' => $transaction->transaction_id,
-                'status_pengiriman' => 'pending',
+                'status_pengiriman' => 'diproses',
                 'keterangan' => 'Pesanan berhasil dibuat dan sedang menunggu konfirmasi.'
             ]);
 
@@ -246,12 +306,25 @@ class TransactionController extends Controller
                     $barang->save();
                 }
 
-                // Restore Voucher Quota if any
+                // Restore Voucher Quota and Claim if any
                 if ($detail->id_voucher) {
                     $voucher = Voucher::where('id_voucher', $detail->id_voucher)->lockForUpdate()->first();
                     if ($voucher) {
                         $voucher->kuota += 1;
                         $voucher->save();
+
+                        if ($voucher->tipe_voucher === 'claim') {
+                            $claim = \App\Models\VoucherClaim::where('user_id', $user->id_users)
+                                ->where('id_voucher', $voucher->id_voucher)
+                                ->where('status', 'used')
+                                ->lockForUpdate()
+                                ->first();
+                            if ($claim) {
+                                $claim->status = 'claimed';
+                                $claim->used_at = null;
+                                $claim->save();
+                            }
+                        }
                     }
                 }
             }
@@ -330,7 +403,7 @@ class TransactionController extends Controller
     public function updateStatus(Request $request, $id, \App\Services\PointService $pointService)
     {
         $validator = Validator::make($request->all(), [
-            'status_pengiriman' => 'required|in:pending,dikemas,dikirim,selesai',
+            'status_pengiriman' => 'required|in:diproses,dikemas,dikirim,selesai',
             'nomor_resi' => 'nullable|string',
             'keterangan' => 'required|string',
         ]);

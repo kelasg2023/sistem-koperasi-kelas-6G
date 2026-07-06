@@ -18,9 +18,18 @@ class VoucherController extends Controller
      * GET /api/voucher
      * Ambil semua voucher beserta info barang yang terkait.
      */
-    public function index(): JsonResponse
+    public function index(\Illuminate\Http\Request $request): JsonResponse
     {
-        $vouchers = Voucher::with('barang:barang_id,nama')->get();
+        $vouchers = Voucher::with('barang:barang_id,nama');
+        
+        if ($request->user()) {
+            $userId = $request->user()->id_users;
+            $vouchers = $vouchers->with(['claims' => function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            }]);
+        }
+        
+        $vouchers = $vouchers->get();
 
         return response()->json([
             'success' => true,

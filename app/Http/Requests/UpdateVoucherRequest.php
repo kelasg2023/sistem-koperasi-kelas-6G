@@ -38,7 +38,7 @@ class UpdateVoucherRequest extends FormRequest
             ],
             'potongan_persen' => 'sometimes|numeric|min:0|max:100',
             'kuota'           => 'sometimes|integer|min:0',
-            'barang_id'       => 'sometimes|integer|exists:barang,barang_id',
+            'barang_id'       => 'nullable|integer|exists:barang,barang_id',
             'tipe_voucher'    => 'sometimes|in:langsung,claim',
             'expired_at'      => 'sometimes|date|after:now',
         ];

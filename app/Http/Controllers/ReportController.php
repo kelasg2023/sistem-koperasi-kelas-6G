@@ -18,9 +18,8 @@ class ReportController extends Controller
     {
         $perPage = $request->query('per_page', 15);
 
-        // Ambil transaksi yang statusnya 'berhasil'
+        // Ambil semua transaksi untuk laporan Manager
         $transactions = Transaction::with(['user', 'details.barang'])
-            ->where('status', 'berhasil')
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
 

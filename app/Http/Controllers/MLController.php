@@ -77,7 +77,18 @@ class MLController extends Controller
         $serviceLevel = $request->query('service_level', 0.95);
         $data = $this->mlService->getStokAlert($leadTime, $serviceLevel);
         
-        return $this->successResponse($data, 'Berhasil mengambil alert stok kritis');
+        $user = $request->user();
+        if ($user) {
+            // Skenario Pancingan: Selalu kirim notifikasi saat endpoint ini dipanggil
+            $itemCount = is_array($data) ? count($data) : 0;
+            $user->notify(new \App\Notifications\SystemNotification(
+                'Laporan Analisis Stok (AI)',
+                "Python ML mendeteksi ada {$itemCount} barang yang perlu perhatian Anda. Silakan cek laporan prediksi stok.",
+                $itemCount > 0 ? 'warning' : 'info'
+            ));
+        }
+
+        return $this->successResponse($data, 'Berhasil mengambil alert stok kritis dan memicu notifikasi');
     }
 
     public function getSafetyStock(Request $request, $id)
