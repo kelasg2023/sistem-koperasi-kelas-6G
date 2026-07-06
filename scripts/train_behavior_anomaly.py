@@ -24,8 +24,8 @@ from loguru import logger
 # ── Konfigurasi ──────────────────────────────────────────────────────────────
 DATA_INPUT = "data/raw/behavior_anomaly_data.csv"
 MODEL_OUTPUT_DIR = "models/saved"
-MODEL_NAME = "model_behavior_anomaly.joblib"
-SCALER_NAME = "scaler_behavior_anomaly.joblib"
+MODEL_NAME = "model_fraud.joblib"
+SCALER_NAME = "scaler_fraud.joblib"
 RANDOM_STATE = 42
 
 
