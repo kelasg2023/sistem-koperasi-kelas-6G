@@ -217,9 +217,10 @@ window.Echo.channel('tugas-channel').listen('DataUpdated', (e) => {
 
 ## 🎨 Panduan Desain & UI
 
-- 🛑 **UI FREEZE**: Desain sudah final. Dilarang mengubah `class` Tailwind, warna, padding, flex/grid yang sudah ada.
+- 🛑 **UI FREEZE**: Desain sudah final. Dilarang mengubah `class` Tailwind, warna, padding, flex/grid yang sudah ada, KECUALI untuk kebutuhan fungsional mendesak yang disetujui (seperti perombakan layout menjadi tab-less).
 - **Hanya Data Binding**: Anda hanya boleh menambahkan atribut Alpine.js (`x-text`, `x-bind:class`, `x-show`, `x-for`) ke HTML yang sudah ada.
 - **Alert/Error**: Gunakan **SweetAlert2** untuk feedback. Jangan ubah struktur DOM secara ekstrem.
+- **Pembaruan Terbaru (Supplier & Manager)**: Dashboard Supplier kini menggunakan layout *tab-less* (aksi cepat via scrollable forms) untuk efisiensi, dan tabel daftar inventaris bersifat Read-Only. Dashboard Manager kini mencakup fungsionalitas pencetakan *report* ke PDF (via CSS `@media print`).
 
 ---
 
